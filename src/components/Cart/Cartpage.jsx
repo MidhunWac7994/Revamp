@@ -7,9 +7,9 @@ import useCart from "./useCart";
 import useSaveForLater from "../../components/SaveForLaterbutton/useSaveForLaterbutton";
 import { Link } from "react-router-dom";
 import CartItem from "./CartItem/CartItem";
+import OrderSummary from "./OrderSummary/OrderSummary";
 
 const CartPage = () => {
-  // ✅ All hooks must be declared unconditionally at the top
   const {
     data,
     loading,
@@ -51,7 +51,6 @@ const CartPage = () => {
     return () => document.body.classList.remove("mobile-bottom-space");
   }, []);
 
-  // ✅ Conditional UI rendering AFTER all hooks
   if (loading && !totalQuantity) {
     return <CartPageShimmer />;
   }
@@ -87,17 +86,17 @@ const CartPage = () => {
         {cartItems?.length > 0 && (
           <div className="laptop:max-w-[1265px] py-6 m-auto laptop:py-[60px] flex max-tabletPro:flex-wrap gap-x-10 items-start max-mobile:-mx-5">
             <div className="w-full flex-[1_1_0] max-mobile:mx-5">
-              <div className=" hidden tablet:flex items-end gap-x-2 mb-10 desktop:mb-[60px]">
-                <h1 className="text-title-26 laptop:text-title-30 desktop:text-title-36 text-black font-lora leading-11">
+              <div className="flex items-end gap-x-2 mb-10 desktop:mb-[60px]">
+                <h1 className="text-[36px] mt-48 ml-52 text-black font-lora leading-11">
                   Shopping Cart
                 </h1>
-                <span className="text-14 text-gray-text font-medium leading-7">
+                <span className="text-14 text-gray-400 font-medium leading-7">
                   ({totalQuantity} {totalQuantity > 1 ? "Items" : "Item"})
                 </span>
               </div>
 
               {cartItems.map((cartItem) => (
-                <div className="flex flex-col group" key={cartItem?.id}>
+                <div className="flex flex-col group ml-72 " key={cartItem?.id}>
                   <CartItem
                     cartItem={cartItem}
                     cartItems={cartItems}
@@ -109,8 +108,17 @@ const CartPage = () => {
               ))}
             </div>
 
-            <div className="max-tabletPro:flex-[0_0_100%] max-mobile:border-y-4 max-mobile:border-[#F4F4F4] tabletPro:max-w-[395px] tablet:w-full mobile:border mobile:border-border-color px-5 tablet:px-6 py-6 tablet:py-8 tablet:sticky tablet:top-[calc(var(--spacing-header-heaight)+30px)] mobile:mt-6 tabletPro:mt-0">
-              {/* Order Summary / Coupon Components */}
+            <div className="mt-48 mr-52">
+              <OrderSummary
+                customPrices={customPrices?.prices}
+                grandTotal={grandTotal}
+                isCart
+                totalQuantity={totalQuantity}
+                priceLoading={customPriceLoading}
+                // isInStock={isInStock}
+                // mutateCartItems={mutateCartItems}
+                // mutateCartPrices={mutateCartPrices}
+              />
             </div>
           </div>
         )}
@@ -120,7 +128,6 @@ const CartPage = () => {
 };
 
 export default CartPage;
-
 
 // import React from 'react'
 // import useCartItemsSummary from "../../CustomHook/useCartItemsSummary";

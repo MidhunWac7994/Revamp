@@ -18,8 +18,10 @@ const ADD_TO_CART = gql`
 `;
 
 const useAddToCart = () => {
-  const cartId = useAtomValue(cartIdAtom); // Get the cartId from the atom
-  const [addToCart, { loading, error, data }] = useMutation(ADD_TO_CART);
+  const cartId = useAtomValue(cartIdAtom); 
+  const [addToCart, { loading, error, data }] = useMutation(ADD_TO_CART, {
+    refetchQueries: ["GetCartDetails"],
+  });
 
   const handleAddToCart = async (cartItems) => {
     if (!cartId) {

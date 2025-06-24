@@ -16,6 +16,7 @@ import Footer from "./Pages/Footer/Footer";
 import { Toaster } from "sonner";
 import Cart from "./Pages/CartPage/Cart";
 import InitialCart from "./components/InitialCart/InitialCart";
+import Checkout from "./Pages/CheckoutPage/Checkout";
 
 const Main = () => {
   const { locale } = useParams();
@@ -38,7 +39,8 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="category-landing" element={<CategoryLandingPage />} />
           <Route path="cart" element={<Cart />} />{" "}
-          {/* ✅ Cart route added */}
+          <Route path="checkout" element={<Checkout />} />{" "}
+    
           <Route
             path="*"
             element={

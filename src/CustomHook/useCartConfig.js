@@ -1,4 +1,3 @@
-"use client";
 import { useAtom } from "jotai";
 import { useMutation, gql } from "@apollo/client";
 import { cartIdAtom } from '../Jotai/cartIdAtom'

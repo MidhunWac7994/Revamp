@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom"; 
+import { useParams, Link } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -12,7 +12,7 @@ import AddToCartButton from "../AddtoCartButton";
 const ProductsSlider = ({ homeData }) => {
   const products = homeData?.products || [];
   const [hoveredImage, setHoveredImage] = useState(null);
-  const { locale } = useParams(); 
+  const { locale } = useParams();
 
   return (
     <div className="mt-30 ml-20 mr-20">
@@ -20,7 +20,7 @@ const ProductsSlider = ({ homeData }) => {
       <Carousel>
         <CarouselContent className="-ml-4">
           {products.map((product, index) => {
-            const productUrl = `/${locale}/${product.url_key}`; 
+            const productUrl = `/${locale}/${product.url_key}`;
             return (
               <CarouselItem
                 key={index}
@@ -32,24 +32,29 @@ const ProductsSlider = ({ homeData }) => {
                   onMouseLeave={() => setHoveredImage(null)}
                 >
                   <Link to={productUrl} className="block" title={product.name}>
-                    <img
-                      src={
-                        hoveredImage === index
-                          ? product.images?.hover_image
-                          : product.images?.url
-                      }
-                      alt={product.name}
-                      className="w-full h-[500px] object-cover mb-4 transition-transform duration-300"
-                    />
+                    {(
+                      hoveredImage === index
+                        ? product.images?.hover_image
+                        : product.images?.url
+                    ) ? (
+                      <img
+                        src={
+                          hoveredImage === index
+                            ? product.images?.hover_image
+                            : product.images?.url
+                        }
+                        alt={product.name}
+                        className="w-full h-[500px] object-cover mb-4 transition-transform duration-300"
+                      />
+                    ) : null}
                   </Link>
-
-                  {/* AddToCartButton shows on hover */}
+                                                          
                   {hoveredImage === index && (
                     <div className="absolute bottom-40 left-1/2 transform -translate-x-1/2 z-10">
                       <AddToCartButton
                         productId={product.id}
                         productName={product.name}
-                        productSku={sku}
+                        productSku={product.sku} 
                         label="Add to Cart"
                       />
                     </div>

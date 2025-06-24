@@ -1,4 +1,6 @@
 import { useMutation, gql } from "@apollo/client";
+import { useAtomValue } from "jotai";
+import { authTokenAtom } from "../Jotai/authAtom";
 
 const CREATE_EMPTY_CART = gql`
   mutation CreateCart {
@@ -26,6 +28,7 @@ const MERGE_CARTS = gql`
 `;
 
 const useNewCart = () => {
+  const token = useAtomValue(authTokenAtom);
   const [createCartMutation, { loading: creatingCart }] =
     useMutation(CREATE_EMPTY_CART);
   const [mergeCartMutation, { loading: mergingCart }] =
@@ -42,13 +45,26 @@ const useNewCart = () => {
   };
 
   const mergeCart = async ({ sourceCartId, destinationCartId }) => {
+    console.log(
+      sourceCartId,
+    
+      "sourceCartId,"
+    );
+    console.log(destinationCartId, "destinationCartId");
     try {
+      console.log(
+        sourceCartId,
+        destinationCartId,
+        "sourceCartId, destinationCartId"
+      );
       const { data } = await mergeCartMutation({
         variables: {
           sourceCartId,
           destinationCartId,
         },
       });
+      
+      console.log(data, "data from mergeCartMutation",error);
       return { mergeCarts: data?.mergeCarts };
     } catch (error) {
       console.error("Merge cart error:", error);

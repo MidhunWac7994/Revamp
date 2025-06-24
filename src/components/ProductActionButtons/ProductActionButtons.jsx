@@ -51,7 +51,6 @@ const ProductActionButtons = (props) => {
       />
       <Link to={`/${locale}/cart`}>
         {" "}
-        {/* ✅ Use dynamic locale */}
         <AddToCartButton
           productId={id}
           productName={name}
@@ -69,7 +68,6 @@ const ProductActionButtons = (props) => {
       </Link>
     </div>
   );
-
   return (
     <>
       {!noCounter && (

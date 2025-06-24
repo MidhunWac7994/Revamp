@@ -10,6 +10,8 @@ const SINGLE_IMAGE_BLOCK = "single_image_block";
 const REVIEWS = "reviews";
 const INSTAGRAM_POSTS = "instagram_posts";
 
+export const AUTH_ROUTES = ["/checkout", "/account", "/wishlist"];
+
 export {
   MAIN_BANNER,
   PRODUCTS_SLIDER,

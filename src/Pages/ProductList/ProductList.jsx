@@ -177,7 +177,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                       <AddToCartButton
                         productId={product.id}
                         productName={product.name}
-                        sku={product.sku}
+                        productSku={product.sku}
                       />
                     </div>
                   </li>

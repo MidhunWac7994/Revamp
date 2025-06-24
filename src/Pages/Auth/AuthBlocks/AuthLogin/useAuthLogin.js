@@ -1,6 +1,6 @@
 // File: useAuthLogin.js
 import { useRef } from "react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtom } from "jotai";
 import { toast } from "sonner";
 import { useMutation } from "@apollo/client";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ const useAuthLogin = (onSuccess) => {
   const formApiRef = useRef(null);
   const { username, handleAuthView, formDataRef } = useAuthContext();
   const setToken = useSetAtom(authTokenAtom);
-  const setCartId = useSetAtom(cartIdAtom);
+  const [cartId, setCartId] = useAtom(cartIdAtom);
   const { createCart, mergeCart } = useNewCart();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,7 +60,7 @@ const useAuthLogin = (onSuccess) => {
             const { cartId: newCartId } = await createCart();
 
             const { mergeCarts } = await mergeCart({
-              sourceCartId: guestCartId,
+              sourceCartId: cartId,
               destinationCartId: newCartId,
             });
 

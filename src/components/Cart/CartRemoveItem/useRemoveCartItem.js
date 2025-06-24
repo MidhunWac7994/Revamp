@@ -24,6 +24,7 @@ const useRemoveCartItem = ({
   const [deleteCartItem, { loading: deletingItem }] = useMutation(
     DELETE_CART_ITEM,
     {
+      refetchQueries: ["GetCartDetails"],
       onCompleted: (data) => {
         setFalse?.();
 
