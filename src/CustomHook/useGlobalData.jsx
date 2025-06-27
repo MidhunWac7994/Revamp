@@ -1,20 +1,24 @@
-
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useQuery } from "@apollo/client";
+import { useAtom } from "jotai";
+import { authTokenAtom } from "../Jotai/authAtom";
 import {
   GET_CUSTOMER_DETAILS,
   GET_FILTER_ATTRIBUTES,
-} from  '../components/FilterAttributeAndCustomerdetailQuery/FilterAttributeAndCustomerdetailQuery';
+} from "../components/FilterAttributeAndCustomerdetailQuery/FilterAttributeAndCustomerdetailQuery";
 
-const GlobalDataContext = createContext();
+export const GlobalDataContext = createContext();
 
 export const GlobalDataProvider = ({ children }) => {
+  const [token] = useAtom(authTokenAtom); // Get token from Jotai atom
+
   const {
     data: userData,
     loading: userLoading,
     error: userError,
+    refetch, // Add refetch to allow manual refresh
   } = useQuery(GET_CUSTOMER_DETAILS, {
-    skip: !localStorage.getItem("token"),
+    skip: !token, // Skip query if no token
   });
 
   const {
@@ -26,12 +30,20 @@ export const GlobalDataProvider = ({ children }) => {
   const availableAttributes =
     filterData?.__type?.inputFields?.map((f) => f.name) || [];
 
+  
+  useEffect(() => {
+    if (token) {
+      refetch();
+    }
+  }, [token, refetch]);
+
   const value = {
     user: userData?.customer || null,
-    isSignedIn: !!userData?.customer,
+    isSignedIn: !!userData?.customer && !!token, 
     availableAttributes,
     loading: userLoading || filterLoading,
     error: userError || filterError,
+    refetchUser: refetch, 
   };
 
   return (

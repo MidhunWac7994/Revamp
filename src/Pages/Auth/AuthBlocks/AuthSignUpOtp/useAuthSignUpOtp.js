@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { useAuthContext } from "../../useAuth";
 import { useSetAtom } from "jotai";
-import { useSearchParams } from "react-router-dom";
 import { SIGNUP_RESEND_OTP, SIGNUP_USING_OTP } from "./AuthSignUpQuery";
 import { toast } from "sonner";
 import { authTokenAtom } from '../../../../Jotai/authAtom'

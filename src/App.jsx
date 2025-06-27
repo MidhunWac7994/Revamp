@@ -17,6 +17,7 @@ import { Toaster } from "sonner";
 import Cart from "./Pages/CartPage/Cart";
 import InitialCart from "./components/InitialCart/InitialCart";
 import Checkout from "./Pages/CheckoutPage/Checkout";
+import { AuthProvider } from  "./Pages/Auth/useAuth";
 
 const Main = () => {
   const { locale } = useParams();
@@ -31,27 +32,28 @@ const Main = () => {
 const App = () => {
   return (
     <Router>
-      <InitialCart/>
-      <Toaster position="bottom-center" richColors />
-      <Routes>
-        <Route path="/" element={<Navigate to="/en" />} />
-        <Route path="/:locale" element={<Main />}>
-          <Route index element={<Home />} />
-          <Route path="category-landing" element={<CategoryLandingPage />} />
-          <Route path="cart" element={<Cart />} />{" "}
-          <Route path="checkout" element={<Checkout />} />{" "}
-    
-          <Route
-            path="*"
-            element={
-              <>
-                {console.log("UrlResolver route matched")}
-                <UrlResolver />
-              </>
-            }
-          />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <InitialCart />
+        <Toaster position="bottom-center" richColors />
+        <Routes>
+          <Route path="/" element={<Navigate to="/en" />} />
+          <Route path="/:locale" element={<Main />}>
+            <Route index element={<Home />} />
+            <Route path="category-landing" element={<CategoryLandingPage />} />
+            <Route path="cart" element={<Cart />} />{" "}
+            <Route path="checkout" element={<Checkout />} />{" "}
+            <Route
+              path="*"
+              element={
+                <>
+                  {console.log("UrlResolver route matched")}
+                  <UrlResolver />
+                </>
+              }
+            />
+          </Route>
+        </Routes>
+      </AuthProvider>
       <Footer />
     </Router>
   );

@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { toast }  from  'sonner'
 import { SIGN_IN_VIEW, SIGN_UP_VIEW } from '../../../../components/Constants'
-import { useAuthContext } from '../../useAuth';
+import { useAuthContext } from "../../useAuth";
 
 const useAuthLoginOrSignUp = () => {
   const formApiRef = useRef(null);

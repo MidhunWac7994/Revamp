@@ -21,7 +21,7 @@ const Map = (props) => {
   return isMapLoaded ? (
     <>
       <GoogleMap
-        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_APIKEY}
+        apiKey={import.meta.env.VITE_API_ENDPOINT_FOR_MAPS}
         defaultZoom={defaultZoom}
         className="w-full h-full"
         options={getMapOptions()}
@@ -46,7 +46,7 @@ const Map = (props) => {
           "absolute top-[50%] left-0 m-auto right-0  translate-y-[-50%] flex items-center justify-center z-80"
         }
       >
-        <Image src={locator} sizes="10vw" width={70} height={70} alt="center" />
+        <img src={locator} sizes="10vw" width={70} height={70} alt="center" />
       </div>
     </>
   ) : (

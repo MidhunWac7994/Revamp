@@ -1,9 +1,13 @@
-import { SIGN_IN_INITIAL_VIEW } from  '../components/Constants'
 import { atom } from "jotai";
-import { LOGIN_TOKEN_KEY } from '../components/Constants';
-import {atomWithStorage} from 'jotai/utils';
+import { atomWithStorage } from "jotai/utils";
+import { SIGN_IN_INITIAL_VIEW, LOGIN_TOKEN_KEY } from "../components/Constants";
+
 export const authViewAtom = atom(SIGN_IN_INITIAL_VIEW);
 
-export const authTokenAtom = atomWithStorage(LOGIN_TOKEN_KEY, null);
+// Initialize authTokenAtom with localStorage value
+export const authTokenAtom = atomWithStorage(
+  LOGIN_TOKEN_KEY,
+  localStorage.getItem(LOGIN_TOKEN_KEY) || null
+);
+
 export const authSignedInState = atom((get) => !!get(authTokenAtom));
- 

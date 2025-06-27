@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useGlobalData } from "../../CustomHook/useGlobalData";
 import { getLocalStorageWithExpiry } from "../../utils/storageUtil";
-import { GUEST_USER_KEY } from  '../Constants'
+import { GUEST_USER_KEY } from "../Constants";
 
 const useCheckout = (props) => {
   const { selectedMethod, hasShippingAddressOnCart } = props;
@@ -12,11 +12,12 @@ const useCheckout = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const purchaseMethod = searchParams.get("type") || "home_delivery";
-  const activeAccordion = searchParams.get("step") || "";
+  const activeAccordion = searchParams.get("step") || "customer_info"; // Default to "customer_info"
 
+  // Initialize disabled state with guest data consideration
   const [disabled, setDisabled] = useState({
-    customer_info: isSignedIn ? true : false,
-    customer_address: isSignedIn ? false : true,
+    customer_info: false, // Always enabled
+    customer_address: !(isSignedIn || guestData?.mobile), // Enable if signed in or guest data exists
     shipping: true,
     payment: true,
   });
@@ -34,7 +35,9 @@ const useCheckout = (props) => {
   };
 
   const changeCurrentAccordion = (id, type) => {
-    if (id) {
+    if (id && !disabled[id]) {
+      // Only change if not disabled
+      console.log(`Changing accordion to: ${id}`);
       setSearchParams((prev) => {
         const newParams = new URLSearchParams(prev);
         newParams.set("step", id);
@@ -50,6 +53,8 @@ const useCheckout = (props) => {
       } else if (!type) {
         updatePurchaseMode(null);
       }
+    } else {
+      console.warn(`Cannot open ${id} because it is disabled`);
     }
   };
 
@@ -61,22 +66,14 @@ const useCheckout = (props) => {
   const getUserVisitedSteps = () => {
     let steps = [];
 
-    if (isSignedIn) {
-      if (hasShippingAddressOnCart) steps = ["customer_address", "shipping"];
-      if (hasShippingAddressOnCart && selectedMethod && activeShippingMethod) {
-        steps = [...steps, "payment"];
-      }
-    } else {
-      if (guestData?.mobile) steps = ["customer_info", "customer_address"];
-      if (guestData?.mobile && hasShippingAddressOnCart)
-        steps = [...steps, "shipping"];
-      if (
-        guestData?.mobile &&
-        hasShippingAddressOnCart &&
-        selectedMethod &&
-        activeShippingMethod
-      ) {
-        steps = [...steps, "payment"];
+    if (isSignedIn || guestData?.mobile) {
+      steps.push("customer_info");
+      if (hasShippingAddressOnCart) {
+        steps.push("customer_address");
+        if (selectedMethod && activeShippingMethod) {
+          steps.push("shipping");
+          steps.push("payment");
+        }
       }
     }
 
@@ -86,21 +83,25 @@ const useCheckout = (props) => {
   const userVisited = getUserVisitedSteps();
 
   useEffect(() => {
-    if (userVisited?.length && isSignedIn) {
-      setDisabled((prev) => ({
-        ...prev,
-        shipping: !userVisited.includes("shipping"),
-        payment: !userVisited.includes("payment"),
-      }));
-    } else if (userVisited?.length && !isSignedIn) {
-      setDisabled((prev) => ({
-        ...prev,
-        customer_address: !userVisited.includes("customer_address"),
-        shipping: !userVisited.includes("shipping"),
-        payment: !userVisited.includes("payment"),
-      }));
-    }
-  }, [selectedMethod, hasShippingAddressOnCart, isSignedIn]);
+    console.log("useCheckout useEffect:", {
+      isSignedIn,
+      guestData,
+      userVisited,
+    });
+    setDisabled((prev) => ({
+      ...prev,
+      customer_info: false, // Always enabled
+      customer_address: !(isSignedIn || guestData?.mobile), // Enable if signed in or guest data
+      shipping: !userVisited.includes("shipping"),
+      payment: !userVisited.includes("payment"),
+    }));
+  }, [
+    isSignedIn,
+    guestData?.mobile,
+    hasShippingAddressOnCart,
+    selectedMethod,
+    activeShippingMethod,
+  ]);
 
   const handleDisabledAccordion = (eventKeyArr, value) => {
     eventKeyArr?.forEach((eventKey) => {
@@ -117,10 +118,11 @@ const useCheckout = (props) => {
     for (let i = 0; i < array.length; i++) {
       const step = array[i];
 
-      if (step.eventKey === "customer_info") {
-        if (isSignedIn || guestData?.mobile) {
-          completed[step.eventKey] = true;
-        }
+      if (
+        step.eventKey === "customer_info" &&
+        (isSignedIn || guestData?.mobile)
+      ) {
+        completed[step.eventKey] = true;
       }
 
       if (step.eventKey === "customer_address" && hasShippingAddressOnCart) {
@@ -132,6 +134,10 @@ const useCheckout = (props) => {
         selectedMethod &&
         selectedMethod !== "pickup"
       ) {
+        completed[step.eventKey] = true;
+      }
+
+      if (step.eventKey === "payment" && userVisited.includes("payment")) {
         completed[step.eventKey] = true;
       }
     }

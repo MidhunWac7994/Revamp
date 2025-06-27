@@ -1,54 +1,31 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Button } from "../../components/ui/button";
+import { useCheckoutContext } from "../CheckoutProvider/CheckoutProvider";
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "../../components/ui/dialog"; // Adjust based on your UI library
-import AuthLoginOrSignUp from "../../../Pages/Auth/AuthBlocks/AuthLoginOrSignUp/AuthLoginOrSignUp";
+  setLocalStorageWithExpiry,
+ 
+} from "../../../utils/storageUtil";
+import { GUEST_USER_KEY } from "../../Constants"
 
 const LoginOrGuest = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { updatePurchaseMode } = useCheckoutContext();
 
-  const handleSignUpClick = () => {
-    const redirect = searchParams.get("redirect") || "/register";
-    navigate(redirect);
+  const handleLogin = () => {
+    // Simulate login (set isSignedIn via useGlobalData, not shown here)
+    console.log("User logged in");
+    // Assume isSignedIn becomes true via useGlobalData
+  };
+
+  const handleGuest = () => {
+    // Simulate guest submission
+    const guestData = { mobile: "1234567890" }; // Example data
+    setLocalStorageWithExpiry(GUEST_USER_KEY, guestData, 24 * 60 * 60 * 1000); // 24-hour expiry
+    console.log("Guest data submitted:", guestData);
+    updatePurchaseMode("home_delivery"); // Optional: set default purchase mode
   };
 
   return (
-    <div data-widget="LoginOrGuest" className="flex px-6 justify-center">
-      <div className="text-center w-full max-w-md">
-        <h2 className="text-20 text-black font-semibold mb-5">
-          Sign in to your account
-        </h2>
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogTrigger asChild>
-            <Button
-              className="w-full"
-              variant="black"
-              size="xl"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Login / Continue
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <AuthLoginOrSignUp />
-          </DialogContent>
-        </Dialog>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Don’t have an account?{" "}
-          <span
-            onClick={handleSignUpClick}
-            className="text-blue-600 cursor-pointer"
-          >
-            Sign up
-          </span>
-        </p>
-      </div>
+    <div className="p-4">
+      <button onClick={handleLogin}>Log In</button>
+      <button onClick={handleGuest}>Continue as Guest</button>
     </div>
   );
 };

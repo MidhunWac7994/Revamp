@@ -67,7 +67,7 @@ const AddressCheckout = ({ handleDeliveryType }) => {
     >
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-18 text-black font-semibold ">
-          {t("Delivery address")}
+          {("Delivery address")}
         </h3>
         <AddAddressCheckout
           triggerBtnVariant="plane"
@@ -113,10 +113,10 @@ const AddressCheckout = ({ handleDeliveryType }) => {
 
       <div className="mt-7">
         <h3 className="text-18 text-black font-semibold ">
-          {t("Billing Information")}
+          {("Billing Information")}
         </h3>
         <p className="mt-3 text-14 text-[#4B4B4B]">
-          {t("Select the address that matches your card or payment method")}
+          {("Select the address that matches your card or payment method")}
         </p>
 
         <div className="flex items-center space-x-10 mt-5">
@@ -144,7 +144,7 @@ const AddressCheckout = ({ handleDeliveryType }) => {
           size={"xl"}
           onClick={nextAccordion}
         >
-          {t("Delivery here")}
+          {("Delivery here")}
         </Button>
       </div>
     </div>
