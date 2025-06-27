@@ -5,8 +5,9 @@ import { DialogHeader } from "../../../../components/components/ui/dialog";
 import PhoneEmailSwitcherInput from "../../../../components/PhoneEmailSwitcherInput/phoneEmailISwitcherinput";
 import FormSubmitButton from "../../../../components/FormSubmitButton/formSubmitButton";
 import SwitchView from "../../../../components/SwitchView/SwitchView";
+import AuthLogin from "../AuthLogin/AuthLogin";
 
-const authLoginOrSignUp = () => {
+const AuthLoginOrSignUp = () => {
   const { handleSubmit, initialValues, handleUserRegistration, loading } =
     useAuthLoginOrSignUp();
   return (
@@ -20,17 +21,18 @@ const authLoginOrSignUp = () => {
         <PhoneEmailSwitcherInput
           name="username"
           id="floatLogin"
-          placeholder={("EmailPhone")}
+          placeholder={"EmailPhone"}
           label={"EmailPhone"}
           floating={true}
           validateOn="submit"
           autoFocus
+          className="border-black"
         />
 
         <FormSubmitButton
           variant={"primary"}
           size={"xl"}
-          className={"w-full max-w-auto mt-0 "}
+          className="w-full h-12 max-w-auto mt-0 bg-[#56c4b9] text-white hover:opacity-90 disabled:opacity-50 rounded-none"
           label={"Continue"}
           loading={loading}
           requiredFields={["username"]}
@@ -40,10 +42,10 @@ const authLoginOrSignUp = () => {
       <SwitchView
         onClick={handleUserRegistration}
         text="Dont have an Account ?"
-        buttonLabel={("Register")}     
+        buttonLabel={"Register"}
       />
-    </>    
+    </>
   );
 };
 
-export default authLoginOrSignUp;
+export default AuthLoginOrSignUp;

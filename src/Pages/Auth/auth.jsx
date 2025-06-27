@@ -14,11 +14,11 @@ const Auth = () => {
   const isAuthOpen = searchParams.get("auth") === "true";
 
   const handleClose = () => {
-    searchParams.delete("auth");
-    setSearchParams(searchParams);
-    setAuthView(SIGN_IN_INITIAL_VIEW); 
+    setToggleAuth(null);
+    setTimeout(() => {
+      setAuthView(SIGN_IN_INITIAL_VIEW);
+    }, );
   };
-
   return (
     <Dialog open={isAuthOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-full max-mobile:h-full max-mobile:rounded-none px-5 py-6 mobile:max-w-[480px] mobile:px-6 mobile:py-6 tablet:px-10 tablet:py-10 max-tablet:overflow-y-auto max-mobile:block">

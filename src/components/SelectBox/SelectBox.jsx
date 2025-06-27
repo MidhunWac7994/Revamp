@@ -10,34 +10,54 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../components/ui/command';
-import { cn } from '../lib/utils';
-import { ChevronDown } from "lucide-react"; 
-import React from "react";
+} from "../components/ui/command";
+import { cn } from "../lib/utils";
 
-const SelectBox = ({
-  buttonClassName,
-  popupClassName,
-  labelClass,
-  options,
-  search,
-  active,
-  translate,
-  onChange,
-  placeholder,
-  label,
-}) => {
-  const [open, setOpen] = React.useState(false);
+import { IS_REQUIRED_MESSAGE } from "../../utils/formValidator";
+import { ChevronDown } from "lucide-react";
+import { useToggle } from "../../CustomHook/useToggle";
+
+const SelectBox = (props) => {
+  const {
+    buttonClassName,
+    popupClassName,
+    labelClass,
+    options,
+    search,
+    active,
+    translate, 
+    onChange,
+    placeholder,
+    label,
+  } = props;
+
+  const { status, toggle } = useToggle();
 
   const handleSelect = (item) => {
     onChange(item);
-    setOpen(false);
+    toggle();
   };
 
-  let selectedLabel = active?.label || placeholder;
+  let selectedLabel = placeholder;
+
+  if (active?.label) {
+    selectedLabel = active.label;
+  }
+
+  const isFieldRequired =
+    label &&
+    props?.validate &&
+    props?.validate()?.includes(IS_REQUIRED_MESSAGE) ? (
+      <>
+        {label}
+        <span style={{ color: "red" }}>*</span>
+      </>
+    ) : (
+      label
+    );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={status} onOpenChange={toggle}>
       {label && (
         <label
           className={cn(
@@ -45,21 +65,21 @@ const SelectBox = ({
             labelClass
           )}
         >
-          {label}
+          {isFieldRequired}
         </label>
       )}
       <PopoverTrigger asChild>
         <button
           role="combobox"
           aria-label={label}
-          aria-expanded={open}
+          aria-expanded={status}
           className={cn(
-            "w-full flex items-center justify-between px-4 py-[15px] rounded-0 border-1 border-[#CBCBCD] focus:outline-0 focus:border-black focus:outline-none h-[50px] font-light text-16",
+            "w-full flex items-center justify-between px-4 py-[15px] rounded-0 border-1 border-[#CBCBCD] focus:outline-0 focus:border-black h-[50px] font-light text-16 data-[state=open]:border-black",
             buttonClassName
           )}
         >
-          {selectedLabel || placeholder}
-          <ChevronDown size={12} className="opacity-50" />
+          {selectedLabel}
+          <ChevronDown size={16} className="opacity-50" />
         </button>
       </PopoverTrigger>
 
@@ -82,13 +102,13 @@ const SelectBox = ({
                     value={option?.value}
                     onSelect={() => handleSelect(option)}
                     className={cn(
-                      "px-[14px] cursor-pointer py-3 text-14 font-normal text-black transition duration-300 ease-in-out hover:bg-[#f9f9f9] rounded-none",
+                      "px-[14px] py-3 text-14 font-normal text-black cursor-pointer hover:bg-[#f9f9f9] transition duration-300 ease-in-out",
                       selectedLabel === option?.label
                         ? "bg-[#F4F4F5] font-medium"
                         : "bg-white"
                     )}
                   >
-                    {translate ? t(option?.label) : option?.label}
+                    {option.label}
                   </CommandItem>
                 ))}
               </CommandGroup>

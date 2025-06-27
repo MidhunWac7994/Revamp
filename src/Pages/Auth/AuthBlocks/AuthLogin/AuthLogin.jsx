@@ -45,7 +45,7 @@ const AuthLogin = ({ onClose }) => {
           <div className="relative">
             <Password
               name="password"
-              className=""
+              className="border-black"
               validate={combine([isRequired])}
               validateOn="submit"
               label="Password"
@@ -55,7 +55,7 @@ const AuthLogin = ({ onClose }) => {
               autocomplete="current-password"
             />
             <Button
-              className="absolute end-0 -bottom-[25px] text-14 font-500 text-black hover:text-primary-blue transition ease-in-out duration-300"
+              className="absolute end-0 -bottom-[25px] text-14 font-500 text-black hover:text-primary-blue transition ease-in-out duration-300 bg-transparent shadow-none"
               type="button"
               onClick={() => handleAuthView(USERNAME_FOR_FORGOT_PASSWORD)}
             >
@@ -66,7 +66,7 @@ const AuthLogin = ({ onClose }) => {
           <FormSubmitButton
             variant="primary"
             size="xl"
-            className="w-full max-w-auto mt-3 tablet:!mt-2"
+            className="w-full h-12 max-w-auto mt-0 bg-[#56c4b9] text-white hover:opacity-90 disabled:opacity-50 rounded-none"
             label="Continue"
             loading={loading}
             requiredFields={["password"]}

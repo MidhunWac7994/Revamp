@@ -26,7 +26,7 @@ const ProductsSlider = ({ homeData }) => {
                 key={index}
                 className="pl-1 md:basis-1 lg:basis-1/4"
               >
-                <div
+                <div    
                   className="image-item text-center p-2 relative"
                   onMouseEnter={() => setHoveredImage(index)}
                   onMouseLeave={() => setHoveredImage(null)}

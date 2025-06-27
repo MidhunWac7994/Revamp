@@ -6,9 +6,9 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from '../../components/components/ui/breadcrumb'
-import CheckoutAccordion from "./CheckoutAccordion";
-import CheckoutProvider from "./CheckoutProvider";
-import CheckoutSummary from "./CheckoutSummary";
+import CheckoutAccordion from "../Checkout/CheckoutAccordion/CheckoutAccordion";
+import CheckoutProvider from "../Checkout/CheckoutProvider/CheckoutProvider";
+import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";  
 
 const Checkout = ({ customerAddress, guestCheckout }) => {
   const breadcrumbData = [
@@ -53,9 +53,9 @@ const Checkout = ({ customerAddress, guestCheckout }) => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="w-full max-w-[1396px] tablet:mt-11 m-auto flex max-tabletPro:flex-wrap items-start gap-x-7 desktop:gap-x-12 max-mobile:mb-10 max-mobile:min-h-[80vh] max-mobile:bg-white ">
+        <div className=" ">
           <CheckoutProvider customerAddress={customerAddress}>
-            <div className="w-full flex-[1_1_0]">
+            <div className="">
               <CheckoutAccordion />
             </div>
             <CheckoutSummary />

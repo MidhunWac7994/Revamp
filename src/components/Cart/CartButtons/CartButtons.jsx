@@ -16,7 +16,6 @@ const CartButtons = (props) => {
     ? `/guest-checkout?step=customer_address`
     : `/guest-checkout?step=customer_info`;
 
-  const baseUrl = isSignedIn ? "/checkout?step=customer_address" : guestUrl;
 
   return (
     <Link to={`/${locale}/checkout`}>
