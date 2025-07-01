@@ -1,6 +1,7 @@
 import { gql, useMutation } from "@apollo/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import useCartConfig from "./useCartConfig";
 import { useCheckoutContext } from "../components/Checkout/CheckoutProvider/CheckoutProvider";
 
@@ -22,6 +23,7 @@ const SET_SHIPPING_METHODS_ON_CART = gql`
         shipping_addresses {
           selected_shipping_method {
             carrier_code
+            method_code
           }
         }
       }
@@ -34,29 +36,26 @@ const useSetShippingMethod = () => {
   const { cartId } = useCartConfig();
   const { mutateShippingMethod } = useCheckoutContext();
 
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const [setShippingMethod, { loading: settingShippingOnCart }] = useMutation(
-    SET_SHIPPING_METHODS_ON_CART,
-    {
-      onError: (err) => {
-        const message = err?.message || "Something went wrong";
-        console.error(message);
-
-        toast.error(message, {
-          id: "set-shipping-error",
-        });
-
-        if (message === `The cart isn't active.`) {
-          navigate("/cart");
-        }
-      },
-    }
+    SET_SHIPPING_METHODS_ON_CART
   );
 
   const setShippingMethodOnCart = async (methodCode, carrierCode, callback) => {
     if (!methodCode || !carrierCode) {
-      toast.error("Please select a shipping method", {
-        id: "shipping-method-required",
-      });
+      if (isMounted.current) {
+        toast.error("Please select a shipping method", {
+          id: "shipping-method-required",
+        });
+      }
       return;
     }
 
@@ -69,10 +68,23 @@ const useSetShippingMethod = () => {
         },
       });
 
-      mutateShippingMethod?.();
-      if (typeof callback === "function") callback();
+      if (isMounted.current) {
+        mutateShippingMethod?.();
+        if (typeof callback === "function") callback();
+      }
     } catch (err) {
-      // Error already handled in onError
+      if (!isMounted.current) return;
+
+      const message = err?.message || "Something went wrong";
+      console.error("[Shipping Error]", message);
+
+      toast.error(message, {
+        id: "set-shipping-error",
+      });
+
+      if (message === `The cart isn't active.`) {
+        navigate("/cart");
+      }
     }
   };
 

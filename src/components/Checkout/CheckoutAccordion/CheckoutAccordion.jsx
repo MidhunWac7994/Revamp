@@ -19,7 +19,6 @@ const CheckoutAccordion = () => {
     getComletedSteps,
   } = useCheckoutContext();
 
-  // Log context values for debugging
   console.log("CheckoutAccordion State:", {
     isSignedIn,
     loading,

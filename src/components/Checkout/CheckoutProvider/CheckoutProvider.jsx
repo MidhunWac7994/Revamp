@@ -7,18 +7,18 @@ import useCartItemsForCheckout from "../../../CustomHook/useCartItemsForCheckout
 
 const CheckoutContext = createContext();
 
-const CheckoutProvider = ({ children, customerAddress }) => {
+const CheckoutProvider = ({ children, customerAddress = {} }) => {
   const cartShippingAddress = useCartShippingAddress();
   const cartShippingMethod = useCartShippingMethod();
   const cartItems = useCartItemsForCheckout();
   const cartCustomPrices = useCartCustomPrice();
 
   const checkoutProps = useCheckout({
-    selectedMethod: cartShippingMethod?.selectedMethod?.method_code,
-    hasShippingAddressOnCart: cartShippingAddress?.hasShippingAddressOnCart,
+    selectedMethod: cartShippingMethod?.selectedMethod?.method_code ?? null,
+    hasShippingAddressOnCart:
+      cartShippingAddress?.hasShippingAddressOnCart ?? false,
   });
 
-  // Log context values for debugging
   console.log("CheckoutProvider Context:", {
     cartShippingAddress,
     cartShippingMethod,

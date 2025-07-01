@@ -47,7 +47,7 @@ const useNewCart = () => {
   const mergeCart = async ({ sourceCartId, destinationCartId }) => {
     console.log(
       sourceCartId,
-    
+
       "sourceCartId,"
     );
     console.log(destinationCartId, "destinationCartId");
@@ -63,8 +63,8 @@ const useNewCart = () => {
           destinationCartId,
         },
       });
-      
-      console.log(data, "data from mergeCartMutation",error);
+
+      console.log(data, "data from mergeCartMutation");
       return { mergeCarts: data?.mergeCarts };
     } catch (error) {
       console.error("Merge cart error:", error);

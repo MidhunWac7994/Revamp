@@ -26,6 +26,10 @@ export {
   INSTAGRAM_POSTS,
 };
 
+export const CHECKMO = "checkmo";
+export const FREE = "free";
+export const CASH_ON_DELIVERY = "cashondelivery";
+
 export const LOGIN_TOKEN_KEY = "liwan_auth_token";
 export const CARTID_KEY = "liwan_cart_id";
 export const GUEST_USER_KEY = "liwan_guest";

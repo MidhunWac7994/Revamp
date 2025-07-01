@@ -26,9 +26,9 @@ import { Search, User, Heart, ShoppingBag, Globe } from "lucide-react";
 import { gql, useQuery } from "@apollo/client";
 
 import AuthBlocks from "../../Pages/Auth/AuthBlocks/AuthBlock";
-import CartItem from '../Cart/CartItem/CartItem'
+import CartItem from "../Cart/CartItem/CartItem";
 import useCartItemsSummary from "../../CustomHook/useCartItemsSummary";
-  
+
 const TOP_MENU = gql`
   query GetTopMenu {
     TopMenu
@@ -40,13 +40,10 @@ export default function Header() {
   const { locale } = useParams();
   const { data } = useQuery(TOP_MENU);
 
-  // Fetch cart items and total quantity using your custom hook
   const { cartItems = [], totalQuantity = 0 } = useCartItemsSummary();
 
-  // Parse top menu items from the query response
   const topMenuItems = data?.TopMenu ? JSON.parse(data.TopMenu).content : [];
 
-  // Update cart count badge whenever totalQuantity changes
   useEffect(() => {
     setCount(totalQuantity);
   }, [totalQuantity]);
@@ -68,7 +65,6 @@ export default function Header() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      {/* Center - Navigation Menu */}
       <NavigationMenu className="hidden lg:flex">
         <NavigationMenuList className="flex gap-2">
           {topMenuItems.map((mainMenuItem) =>
@@ -108,12 +104,10 @@ export default function Header() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      {/* Right - Icons */}
       <div className="flex items-center gap-4">
         <Globe className="h-5 w-5 text-gray-700" />
         <Search className="h-5 w-5 text-gray-700" />
 
-        {/* User Login Dialog */}
         <Dialog>
           <DialogTrigger asChild>
             <User className="h-5 w-5 text-gray-700 cursor-pointer" />
@@ -127,7 +121,6 @@ export default function Header() {
 
         <Heart className="h-5 w-5 text-gray-700" />
 
-        {/* Cart Sheet Trigger */}
         <Sheet>
           <SheetTrigger asChild>
             <div className="relative cursor-pointer">
@@ -162,7 +155,6 @@ export default function Header() {
                 )}
               </div>
 
-              {/* Buttons container */}
               <div className="px-4 pb-6 pt-4 border-t border-gray-200 flex flex-col gap-3">
                 <Link
                   to={`/${locale}/cart`}
