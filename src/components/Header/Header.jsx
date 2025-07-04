@@ -150,7 +150,7 @@ export default function Header() {
                   ))
                 ) : (
                   <p className="text-center text-gray-500 mt-10">
-                    Your cart is empty
+                    Your cart is empty  
                   </p>
                 )}
               </div>

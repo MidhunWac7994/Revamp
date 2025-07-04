@@ -87,8 +87,8 @@ const AddressCheckout = ({ handleDeliveryType }) => {
         />
       ) : error ? (
         <EmptyPages
-          title={t("No Saved Addresses")}
-          subTitle={t(
+          title={("No Saved Addresses")}
+          subTitle={(
             "Please add an address to your profile to complete orders"
           )}
           icon={emptyAddress}

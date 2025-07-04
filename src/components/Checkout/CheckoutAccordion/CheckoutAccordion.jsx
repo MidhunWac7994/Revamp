@@ -8,6 +8,8 @@ import CheckoutShipping from "../CheckoutShipping/CheckoutShipping";
 import Payment from "../Payment/Payment";
 import { getLocalStorageWithExpiry } from "../../../utils/storageUtil";
 import { GUEST_USER_KEY } from "../../Constants";
+import { use } from "react";
+import { useParams } from "react-router-dom";
 
 const CheckoutAccordion = () => {
   const { isSignedIn, user, loading } = useGlobalData();
@@ -18,7 +20,7 @@ const CheckoutAccordion = () => {
     disabled,
     getComletedSteps,
   } = useCheckoutContext();
-
+  const locale =useParams();
   console.log("CheckoutAccordion State:", {
     isSignedIn,
     loading,
@@ -28,6 +30,7 @@ const CheckoutAccordion = () => {
     disabled,
     completedSteps: getComletedSteps(),
   });
+  console.log(locale)
 
   const guestData = getLocalStorageWithExpiry(GUEST_USER_KEY);
   const { mobile } = guestData || {};

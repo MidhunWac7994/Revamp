@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Price from '../../components/Price/Price';
 
-const PriceSummary = (props) => {
+const   PriceSummary = (props) => {
   const { customPrices } = props;
 
   const subtotal = customPrices?.find(

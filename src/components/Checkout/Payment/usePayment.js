@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { toast } from "sonner";
 import { CARTID_KEY } from "../../Constants";
@@ -44,6 +44,8 @@ const usePayment = (props = {}) => {
   const { shippingMethod = "", isSignedIn = false } = props;
 
   const navigate = useNavigate();
+  const { locale } = useParams(); // ✅ Get locale from route
+
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const rawCartId = localStorage.getItem(CARTID_KEY) || "";
@@ -64,7 +66,7 @@ const usePayment = (props = {}) => {
     },
     onError: (err) => {
       if (err.message.includes("isn't active")) {
-        navigate("/cart");
+        navigate(`/${locale}/cart`);
       } else {
         console.error(err);
       }
@@ -80,7 +82,7 @@ const usePayment = (props = {}) => {
       onError: (err) => {
         toast.error(err.message, { duration: 6000 });
         if (err.message.includes("isn't active")) {
-          navigate("/cart");
+          navigate(`/${locale}/cart`);
         }
       },
     }
@@ -99,23 +101,8 @@ const usePayment = (props = {}) => {
     });
   };
 
-  const [placeOrderMutation, { loading: placeOrderLoading }] = useMutation(
-    PLACE_ORDER,
-    {
-      onCompleted: (data) => {
-        const orderNumber = data?.placeOrder?.order?.order_number;
-        navigate(`/payment-receipt?status=1&order_id=${orderNumber}`);
-      },
-      onError: (err) => {
-        setIsRedirecting(false);
-        toast.error(err.message, {
-          id: "Error in place order",
-          duration: 6000,
-        });
-        navigate("/payment-receipt?status=0");
-      },
-    }
-  );
+  const [placeOrderMutation, { loading: placeOrderLoading }] =
+    useMutation(PLACE_ORDER);
 
   const handlePlaceOrder = () => {
     if (!selectedMethodCode) {
@@ -128,6 +115,18 @@ const usePayment = (props = {}) => {
     setIsRedirecting(true);
     placeOrderMutation({
       variables: { cartId },
+      onCompleted: (data) => {
+        const orderNumber = data?.placeOrder?.order?.order_number;
+        navigate(`/${locale}/payment-receipt?status=1&order_id=${orderNumber}`);
+      },
+      onError: (err) => {
+        setIsRedirecting(false);
+        toast.error(err.message, {
+          id: "Error in place order",
+          duration: 6000,
+        });
+        navigate(`/${locale}/payment-receipt?status=0`);
+      },
     });
   };
 

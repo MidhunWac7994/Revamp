@@ -1,11 +1,13 @@
+import { useParams } from "react-router-dom";
 import usePayment from "./usePayment";
-import { useCheckoutContext } from "../CheckoutProvider/CheckoutProvider"
+import { useCheckoutContext } from "../CheckoutProvider/CheckoutProvider";
 import { useGlobalData } from "../../../CustomHook/useGlobalData";
 import PaymentMethods from "./PaymentMethods";
-import { Button } from "../../../components/components/ui/button";  
+import { Button } from "../../../components/components/ui/button";
 import Spinner from "../../Spinner/Spinner";
 
 const Payment = () => {
+  const { locale } = useParams(); 
   const {
     prices,
     shippingAddress,
@@ -32,6 +34,7 @@ const Payment = () => {
     prices,
     cartItems,
     totalQuantity,
+    locale, 
   });
 
   return (

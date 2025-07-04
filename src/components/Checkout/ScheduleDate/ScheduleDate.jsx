@@ -100,7 +100,7 @@ const ScheduleDate = ({ disableBtn }) => {
           placeholder="Select delivery time"
           options={deliveryTime}
           buttonClassName="max-w-[300px]"
-          active={{ label: dateAndTime?.scheduledTime }}
+          active={dateAndTime?.scheduledTime} 
           onChange={handleSetDeliveryTime}
           disabled={selectedTimeLoading || isMutating}
         />

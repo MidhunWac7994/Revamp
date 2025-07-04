@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
-import useSetShippingAddress from "./useSetShippingAdress";
-import useSetBillingAddress from './useSetBillingAdress';
+import useSetShippingAddress from "./useSetShippingAdress"
+import useSetBillingAddress from "./useSetBillingAdress";
 import { useGlobalData } from "./useGlobalData";
 
 const useCustomerAddress = () => {
@@ -15,43 +15,44 @@ const useCustomerAddress = () => {
 
   const { data, loading, error, refetch } = useQuery(FETCH_ADDRESS, {
     skip: !isSignedIn,
-    onCompleted: (data) => {
-      const addressData = data?.customer?.addresses;
-      setHasCustomerAddress(addressData?.length > 0);
+  });
 
-      const defaultAddr = addressData?.find(
+  useEffect(() => {
+    if (data?.customer?.addresses) {
+      const addressData = data.customer.addresses;
+      setHasCustomerAddress(addressData.length > 0);
+
+      const defaultAddr = addressData.find(
         (ele) => ele?.default_shipping && ele?.default_billing
       );
       setDefaultAddress(defaultAddr);
 
       if (location.pathname === "/checkout") {
-        if (addressData) {
-          const hasAnyDefaultAddress = addressData.some(
-            (ele) => ele?.default_billing && ele?.default_shipping
-          );
-          const isSelectedShippingNotDefault = addressData.some(
-            (ele) => ele?.selected_address_shipping && !ele?.default_shipping
-          );
+        const hasAnyDefaultAddress = addressData.some(
+          (ele) => ele?.default_billing && ele?.default_shipping
+        );
+        const isSelectedShippingNotDefault = addressData.some(
+          (ele) => ele?.selected_address_shipping && !ele?.default_shipping
+        );
 
-          const defaultAddress = addressData.find(
-            (ele) => ele?.default_shipping && ele?.default_billing
-          );
+        const defaultAddress = addressData.find(
+          (ele) => ele?.default_shipping && ele?.default_billing
+        );
 
-          if (
-            !hasAnyDefaultAddress &&
-            !isSelectedShippingNotDefault &&
-            addressData[0]?.id
-          ) {
-            updateShippingAddress(addressData[0]?.id);
-            updateBillingAddress(addressData[0]?.id);
-          } else if (hasAnyDefaultAddress && !isSelectedShippingNotDefault) {
-            updateShippingAddress(defaultAddress?.id);
-            updateBillingAddress(defaultAddress?.id);
-          }
+        if (
+          !hasAnyDefaultAddress &&
+          !isSelectedShippingNotDefault &&
+          addressData[0]?.id
+        ) {
+          updateShippingAddress(addressData[0]?.id);
+          updateBillingAddress(addressData[0]?.id);
+        } else if (hasAnyDefaultAddress && !isSelectedShippingNotDefault) {
+          updateShippingAddress(defaultAddress?.id);
+          updateBillingAddress(defaultAddress?.id);
         }
       }
-    },
-  });
+    }
+  }, [data, location.pathname, updateShippingAddress, updateBillingAddress]);
 
   return {
     addressData: data?.customer?.addresses,
@@ -65,7 +66,7 @@ const useCustomerAddress = () => {
 
 export default useCustomerAddress;
 
-const FETCH_ADDRESS = gql `
+const FETCH_ADDRESS = gql`
   query GetCustomerAddressList {
     customer {
       addresses {

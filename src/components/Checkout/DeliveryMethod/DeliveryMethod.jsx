@@ -47,7 +47,7 @@ const DeliveryMethod = ({
                 } w-4 h-4 rounded-[2px] border border-[#8F8F8F] text-white justify-center absolute end-5 top-5 flex items-center`}
               >
                 {selectedMethodCode === item?.method_code && (
-                  <Check size={10} className="text-white" />
+                  <Check size={10} className="text-black" />
                 )}
               </span>
 

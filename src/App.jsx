@@ -18,6 +18,7 @@ import Cart from "./Pages/CartPage/Cart";
 import InitialCart from "./components/InitialCart/InitialCart";
 import Checkout from "./Pages/CheckoutPage/Checkout";
 import { AuthProvider } from  "./Pages/Auth/useAuth";
+import PaymentReceipt from "./components/PaymentReceipt/PaymentReceipt";
 
 const Main = () => {
   const { locale } = useParams();
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="category-landing" element={<CategoryLandingPage />} />
             <Route path="cart" element={<Cart />} />{" "}
             <Route path="checkout" element={<Checkout />} />{" "}
+            <Route path="payment-receipt" element={<PaymentReceipt />} />
             <Route
               path="*"
               element={

@@ -35,7 +35,7 @@ const Checkout = ({ customerAddress, guestCheckout }) => {
                 key={index}
                 className="inline-flex items-center gap-1.5"
               >
-                {item.path ? (
+                {item.path ? (    
                   <BreadcrumbLink
                     href={item.path}
                     className="hover:text-foreground"
