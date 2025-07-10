@@ -8,7 +8,6 @@ import {
 } from "../components/ui/carousel";
 
 const ThreeImage = ({ homeData }) => {
-  // Assuming the images are part of the content_three_image array in homeData
   const images = homeData?.content_three_image || [];
 
   return (

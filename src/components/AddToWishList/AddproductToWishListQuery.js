@@ -1,4 +1,4 @@
-export const ADD_PRODUCTS_TO_WISHLIST = /* GraphQL */ `
+  export const ADD_PRODUCTS_TO_WISHLIST = /* GraphQL */ `
   mutation AddProductsToWishlist(
     $wishlistId: ID!
     $productsToWishilist: [WishlistItemInput!]!

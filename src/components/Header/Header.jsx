@@ -21,13 +21,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from "../components/ui/sheet";
-
 import { Search, User, Heart, ShoppingBag, Globe } from "lucide-react";
 import { gql, useQuery } from "@apollo/client";
-
 import AuthBlocks from "../../Pages/Auth/AuthBlocks/AuthBlock";
 import CartItem from "../Cart/CartItem/CartItem";
 import useCartItemsSummary from "../../CustomHook/useCartItemsSummary";
+import SearchTrigger from "./SearchTrigger/SearchTrigger";
 
 const TOP_MENU = gql`
   query GetTopMenu {
@@ -106,7 +105,10 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
         <Globe className="h-5 w-5 text-gray-700" />
-        <Search className="h-5 w-5 text-gray-700" />
+
+        <SearchTrigger>
+          <Search className="h-5 w-5 text-gray-700 cursor-pointer" />
+        </SearchTrigger>
 
         <Dialog>
           <DialogTrigger asChild>
@@ -150,7 +152,7 @@ export default function Header() {
                   ))
                 ) : (
                   <p className="text-center text-gray-500 mt-10">
-                    Your cart is empty  
+                    Your cart is empty
                   </p>
                 )}
               </div>
