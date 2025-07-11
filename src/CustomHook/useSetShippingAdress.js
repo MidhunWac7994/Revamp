@@ -1,20 +1,20 @@
 import { gql, useMutation } from "@apollo/client";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import useCartConfig from "./useCartConfig";
-
 
 const useSetShippingAddress = (props) => {
   const { mutateShippingMethod, mutateShippingAddressOnCart } = props;
   const { cartId } = useCartConfig();
-  const navigate = useNavigate(); 
-  const location = useLocation(); 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { locale } = useParams(); 
 
   const [setShippingAddress, { loading: shippingLoading }] = useMutation(
     SET_SHIPPING_ADDRESS,
     {
       onCompleted: (data) => {
-        if (location.pathname === "/checkout") {
+        if (location.pathname === `/${locale}/checkout`) {
           mutateShippingMethod?.();
           mutateShippingAddressOnCart?.();
         }
@@ -23,7 +23,7 @@ const useSetShippingAddress = (props) => {
         toast.error(err?.message, { duration: 7000 });
         console.log(err?.message);
         if (err?.message === `The cart isn't active.`) {
-          navigate("/cart"); 
+          navigate(`/${locale}/cart`); // ✅ Redirect using locale
         }
       },
     }
@@ -47,7 +47,6 @@ const useSetShippingAddress = (props) => {
 
 export default useSetShippingAddress;
 
-
 const SET_SHIPPING_ADDRESS = gql`
   mutation SetShippingAddressesOnCart($cartId: String!, $addressId: Int) {
     setShippingAddressesOnCart(
@@ -63,25 +62,19 @@ const SET_SHIPPING_ADDRESS = gql`
           firstname
           lastname
           type_of_address
-          type_of_address
           street
           city
           region {
             code
             label
-            __typename
           }
           telephone
           country {
             code
             label
-            __typename
           }
-          __typename
         }
-        __typename
       }
-      __typename
     }
   }
 `;

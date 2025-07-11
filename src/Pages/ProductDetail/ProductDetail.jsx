@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL, GET_PDP_BREADCRUMB } from "./DetailQuery";
 import ProductFullDetails from  '../../components/ProductFulldetail/ProductFullDetail';
+import EmptyPages from "../../components/EmptyPages/EmptyPages";
 
 const ProductDetail = (props) => {
   const { url, locale, key, version } = props;
@@ -37,7 +38,12 @@ const ProductDetail = (props) => {
 
     console.log(productDetails, "productDetails");
 
+    if (itemLength === 0 || !productDetails) {
+      return <EmptyPages />;
+    }
+
   return (
+    
     <ProductFullDetails
       productDetails={productDetails}
       itemLength={itemLength}

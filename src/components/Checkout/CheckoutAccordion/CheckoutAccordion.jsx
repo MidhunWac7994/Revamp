@@ -8,7 +8,6 @@ import CheckoutShipping from "../CheckoutShipping/CheckoutShipping";
 import Payment from "../Payment/Payment";
 import { getLocalStorageWithExpiry } from "../../../utils/storageUtil";
 import { GUEST_USER_KEY } from "../../Constants";
-import { use } from "react";
 import { useParams } from "react-router-dom";
 
 const CheckoutAccordion = () => {

@@ -72,7 +72,7 @@ const AddressCheckout = ({ handleDeliveryType }) => {
         <AddAddressCheckout
           triggerBtnVariant="plane"
           triggerBtnClass="text-16 p-0 h-fit font-semibold text-lw-dark-blue max-mobile:hidden"
-          triggerBtnLabel="Addnewaddress"
+          triggerBtnLabel="Add new address"
           mutateCustomerAddress={mutateCustomerAddress}
           updateAddressOnCart={updateShippingAddress}
           handleDeliveryType={handleDeliveryType}
@@ -102,14 +102,14 @@ const AddressCheckout = ({ handleDeliveryType }) => {
       ) : (
         <MyAddressShimmer />
       )}
-      <AddAddressCheckout
+      {/* <AddAddressCheckout
         triggerBtnVariant="outlinePrimary"
         triggerBtnClass="h-12 text-lw-primary mt-[14px] w-full font-semibold mobile:hidden"
-        triggerBtnLabel="Addnewaddress"
+        // triggerBtnLabel="Addnewaddress"
         mutateCustomerAddress={mutateCustomerAddress}
         updateAddressOnCart={updateShippingAddress}
         handleDeliveryType={handleDeliveryType}
-      />
+      /> */}
 
       <div className="mt-7">
         <h3 className="text-18 text-black font-semibold ">

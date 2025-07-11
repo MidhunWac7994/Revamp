@@ -58,7 +58,7 @@ const ScheduleDate = ({ disableBtn }) => {
                     {ele?.day}
                   </span>
                   <div
-                    className={`bg-[#F8F8F8] text-center py-3 px-5 border-b-4 border-lw-primary flex flex-col gap-1 group-hover:bg-lw-primary group-hover:text-white transition-all duration-300 group-hover:border-[#47d1c3] ${
+                    className={`bg-[#F8F8F8] text-center py-3 px-5 border-b-4 border-lw-primary flex flex-col gap-1 group-hover:bg-lw-primary group-hover:text-white transition-all duration-300 hover:bg-black group-hover:border-[#47d1c3] ${
                       dateAndTime?.scheduledDate?.date === ele?.date
                         ? "border-[#47d1c3] bg-lw-primary text-white"
                         : ""
@@ -100,7 +100,7 @@ const ScheduleDate = ({ disableBtn }) => {
           placeholder="Select delivery time"
           options={deliveryTime}
           buttonClassName="max-w-[300px]"
-          active={dateAndTime?.scheduledTime} 
+          active={dateAndTime?.scheduledTime}
           onChange={handleSetDeliveryTime}
           disabled={selectedTimeLoading || isMutating}
         />
@@ -112,7 +112,7 @@ const ScheduleDate = ({ disableBtn }) => {
           variant="primary"
           size="xl"
           onClick={confirmShippingMethod}
-          className="w-full max-w-full"
+          className="w-40 bg-[#53bcb7] text-white  rounded-none  h-12"
         >
           Continue
         </Button>

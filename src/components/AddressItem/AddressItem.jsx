@@ -77,7 +77,7 @@ const AddressItem = (props) => {
                   activeAddress ? "bg-lw-primary border-lw-primary" : ""
                 } w-4 h-4 rounded-[2px] border border-[#8F8F8F] text-white justify-center absolute end-5 top-5 flex items-center`}
               >
-                {activeAddress && <Check size={12} className="text-white" />}
+                {activeAddress && <Check size={12} className="text-black" />}
               </span>
             )}
           </>

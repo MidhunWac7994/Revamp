@@ -170,7 +170,7 @@ export const GET_PRODUCT_DETAIL = gql`
               name
               sku
               custom_attribute_details(
-                attribute_codes: ["color", "product_model", "orientation"]
+                attribute_codes: ["color"]
               ) {
                 code
                 value
@@ -178,8 +178,7 @@ export const GET_PRODUCT_DETAIL = gql`
               }
               url_key
               color
-              product_model
-              orientation
+              
               price_range {
                 minimum_price {
                   discount {

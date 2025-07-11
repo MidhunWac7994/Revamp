@@ -49,7 +49,7 @@ const CheckoutShipping = () => {
         <div className="mt-5">
           <Button
             disabled={disableBtn}
-            className="w-full max-w-full"
+            className="w-40 bg-[#53bcb7] text-white  rounded-none  h-12"
             variant="primary"
             size="xl"
             onClick={confirmShippingMethod}

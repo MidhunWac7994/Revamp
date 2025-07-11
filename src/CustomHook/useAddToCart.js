@@ -34,7 +34,7 @@ const useAddToCart = () => {
     try {
       const response = await addToCart({
         variables: {
-          cartId, // Use the cartId from Jotai
+          cartId, 
           cartItems,
         },
       });

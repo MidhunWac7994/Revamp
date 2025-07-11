@@ -4,7 +4,7 @@ import useProductListing from "./useProductListing";
 import ProductBreadcrumb from "./ProductBreadcrumb";
 import FilterSidebar from "./FilterSidebar";
 import AddToCartButton from "../../components/AddtoCartButton";
-import { Progress } from "@/components/components/ui/progress";
+import { Progress } from "../../components/components/ui/progress";
 import {
   Pagination,
   PaginationContent,
@@ -12,6 +12,7 @@ import {
   PaginationLink,
   PaginationPrevious,
   PaginationNext,
+  PaginationEllipsis,
 } from "../../components/components/ui/pagination";
 import {
   DropdownMenu,
@@ -130,7 +131,9 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
           )}
 
           {loading ? (
-            <Progress value={30} style={{ width: "30%" }} />
+            <div className="mt-80">
+              <Progress value={30} style={{ width: "30%" }} />
+            </div>
           ) : products.length === 0 ? (
             <div>No products found for this category.</div>
           ) : (
@@ -174,7 +177,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                           2
                         )}
                       </p>
-                      <AddToCartButton
+                      <AddToCartButton 
                         productId={product.id}
                         productName={product.name}
                         productSku={product.sku}
@@ -194,9 +197,10 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                         />
                       </PaginationItem>
                     )}
-                    {[...Array(totalPages).keys()].map((i) => {
-                      const page = i + 1;
-                      return (
+
+                    {[1, 2, 3]
+                      .filter((page) => page <= totalPages)
+                      .map((page) => (
                         <PaginationItem key={page}>
                           <PaginationLink
                             isActive={page === currentPage}
@@ -205,8 +209,14 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                             {page}
                           </PaginationLink>
                         </PaginationItem>
-                      );
-                    })}
+                      ))}
+
+                    {totalPages > 3 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+
                     {currentPage < totalPages && (
                       <PaginationItem>
                         <PaginationNext

@@ -1,17 +1,29 @@
 import { gql } from "@apollo/client";
 
-export const GET_CART_DETAILS = gql `
+export const GET_CART_DETAILS = gql`
   query GetCartDetails($cartId: String!) {
     cart(cart_id: $cartId) {
       id
+      email
       total_quantity
+      prices {
+        grand_total {
+          value
+          currency
+        }
+      }
+      applied_coupons {
+        code
+      }
       items {
         uid
         id
         quantity
+        available_stock
         is_stock_available_for_item
         strike_price
         __typename
+
         # Configurable Item Section
         ... on ConfigurableCartItem {
           configured_variant {
@@ -30,6 +42,7 @@ export const GET_CART_DETAILS = gql `
               minimum_price {
                 regular_price {
                   value
+                  currency
                 }
               }
             }
@@ -46,16 +59,21 @@ export const GET_CART_DETAILS = gql `
               }
             }
           }
-
           customizable_options {
             label
             id
             is_required
+            type
+            option_custom_type
             values {
               customizable_option_value_uid
               price {
+                type
+                units
                 value
               }
+              label
+              value
             }
           }
         }
@@ -66,10 +84,17 @@ export const GET_CART_DETAILS = gql `
             label
             id
             is_required
+            type
+            option_custom_type
             values {
+              customizable_option_value_uid
               price {
+                type
+                units
                 value
               }
+              label
+              value
             }
           }
         }
@@ -81,10 +106,7 @@ export const GET_CART_DETAILS = gql `
           sku
           name
           url_key
-          color
-          #below key is required to get the product model details
-          product_model
-          orientation
+          has_customizable
           stock_status
           thumbnail {
             url
@@ -100,9 +122,11 @@ export const GET_CART_DETAILS = gql `
             minimum_price {
               regular_price {
                 value
+                currency
               }
               final_price {
                 value
+                currency
               }
               discount {
                 amount_off
@@ -112,9 +136,11 @@ export const GET_CART_DETAILS = gql `
             maximum_price {
               regular_price {
                 value
+                currency
               }
               final_price {
                 value
+                currency
               }
             }
           }
@@ -135,6 +161,7 @@ export const GET_CART_DETAILS = gql `
             }
           }
         }
+
         prices {
           custom_row_total_price {
             maximum_price {
@@ -146,13 +173,13 @@ export const GET_CART_DETAILS = gql `
           }
           row_total {
             value
+            currency
           }
         }
       }
     }
   }
 `;
-
 export const SAVE_FOR_LATER = gql`
   mutation SaveForLater($cartId: String!, $productsId: [Int]!) {
     saveForLaterMultiple(input: { productIds: $productsId, cartId: $cartId }) {

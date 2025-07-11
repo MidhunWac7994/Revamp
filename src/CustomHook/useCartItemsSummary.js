@@ -80,9 +80,6 @@ const GET_CART_DETAILS = gql`
           sku
           name
           url_key
-          color
-          product_model
-          orientation
           stock_status
           thumbnail {
             url
@@ -167,26 +164,17 @@ const useCartItemsSummary = () => {
           "The current user cannot perform operations on cart"
         )
       ) {
-        fetchCartId(); // Re-fetch cart ID on error
+        fetchCartId();
       }
     },
   });
 
   const cartItems = data?.cart?.items || [];
-  console.log(cartItems);
-
   const totalQuantity = data?.cart?.total_quantity || 0;
-
   const isInStock =
     cartItems.length > 0 &&
     cartItems.every((item) => item?.is_stock_available_for_item);
 
-  // console.log("useCartItemsSummary result:", {
-  //   totalQuantity,
-  //   cartItems,
-  //   loading,
-  //   error,
-  // });
   return {
     data,
     totalQuantity,
@@ -194,7 +182,7 @@ const useCartItemsSummary = () => {
     loading,
     error,
     isInStock,
-    mutateCartItems: refetch, 
+    mutateCartItems: refetch,
   };
 };
 
