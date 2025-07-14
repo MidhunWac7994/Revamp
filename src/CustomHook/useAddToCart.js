@@ -1,8 +1,8 @@
 import { useMutation, gql } from "@apollo/client";
-import { cartIdAtom } from "../Jotai/cartIdAtom"; // Adjust the import path as necessary
+import { cartIdAtom } from "../Jotai/cartIdAtom";         
 import { useAtomValue } from "jotai";
 
-const ADD_TO_CART = gql`
+const ADD_TO_CART = gql `
   mutation AddProductToCart($cartId: String!, $cartItems: [CartItemInput!]!) {
     addProductsToCart(cartId: $cartId, cartItems: $cartItems) {
       cart {
@@ -16,6 +16,7 @@ const ADD_TO_CART = gql`
     }
   }
 `;
+
 
 const useAddToCart = () => {
   const cartId = useAtomValue(cartIdAtom); 

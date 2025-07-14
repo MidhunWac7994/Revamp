@@ -29,7 +29,7 @@ const ExpectedDelivery = ({ isQuickview }) => {
 
           
           {active?.label && (
-            <div className="flex items-start gap-2 bg-black">
+            <div className="flex items-start gap-2 bg-gray-300 w-45">
               <ShipmentIcon size={20} color="#000000" />
               <p className="text-15 font-normal text-black">
                 {"Ship to"} {active?.label}

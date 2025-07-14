@@ -1,6 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
-import { authTokenAtom } from "../../../Jotai/authAtom"
+import { authTokenAtom } from "../../../Jotai/authAtom";
 import AuthLoginOrSignUp from "./AuthLoginOrSignUp/AuthLoginOrSignUp";
 import {
   SIGN_IN_INITIAL_VIEW,
@@ -15,21 +15,32 @@ import AuthSignUp from "./AuthSignUp/AuthSignuUp";
 import AuthSignUpOtp from "./AuthSignUpOtp/AuthSignUpOtp";
 import { AuthContext, useAuthContext } from "../useAuth";
 
-const AuthBlocks = () => {
+const AuthBlocks = ({ onClose }) => {
   const authProps = useAuthContext();
-  const [, setAuthToken] = useAtom(authTokenAtom); // Add token setter
+  const [, setAuthToken] = useAtom(authTokenAtom);
 
-  // Example: Function to handle successful login (to be called in AuthLogin or AuthLoginOtp)
+  console.log("🔍 AuthBlocks received onClose:", typeof onClose);
+
   const handleSuccessfulLogin = (token) => {
-    localStorage.setItem("token", token); // Store token in localStorage
-    setAuthToken(token); // Update Jotai atom
-    authProps.handleAuthView(SIGN_IN_INITIAL_VIEW); // Reset view or redirect as needed
+    console.log("🔍 handleSuccessfulLogin called with token:", token);
+    localStorage.setItem("token", token);
+    setAuthToken(token);
+    authProps.handleAuthView(SIGN_IN_INITIAL_VIEW);
+    if (typeof onClose === "function") {
+      console.log("🔍 Calling onClose from handleSuccessfulLogin");
+      onClose();
+    } else {
+      console.warn(
+        "⚠️ onClose is not a function in handleSuccessfulLogin:",
+        onClose
+      );
+    }
   };
 
   const AuthBlocks = {
     [SIGN_IN_INITIAL_VIEW]: <AuthLoginOrSignUp />,
-    [SIGN_IN_VIEW]: <AuthLogin onSuccess={handleSuccessfulLogin} />, // Pass callback
-    [SIGN_IN_OTP]: <AuthLoginOtp onSuccess={handleSuccessfulLogin} />, // Pass callback
+    [SIGN_IN_VIEW]: <AuthLogin onClose={onClose} />,
+    [SIGN_IN_OTP]: <AuthLoginOtp onSuccess={handleSuccessfulLogin} />,
     [SIGN_UP_VIEW]: <AuthSignUp />,
     [SIGN_UP_OTP]: <AuthSignUpOtp />,
   };

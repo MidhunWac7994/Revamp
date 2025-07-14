@@ -12,7 +12,7 @@ import TextInput from "../../TextInput/TextInput";
 import AutoComplete from "../SearchTrigger/AutoComplete";
 import { Search, X } from "lucide-react";
 
-const SearchTrigger = () => {
+const SearchTrigger = ({ children }) => {
   const {
     handleSubmit,
     formApiRef,
@@ -37,19 +37,21 @@ const SearchTrigger = () => {
           data-widget="SearchTrigger"
           className="mobile:p-header-icons p-mob-header-icons"
         >
-          <Search size={22} className="stroke-current" />
+          {children || <Search size={22} className="stroke-current" />}
         </button>
       </DrawerTrigger>
+
       <DrawerPortal>
         <DrawerContent className="right-0 left-0 top-0 fixed z-50 outline-none w-full bg-white h-96 mobile:h-auto data-[vaul-drawer-direction=top]:sm:max-h-[100svh] data-[vaul-drawer-direction=top]:laptop:max-h-[75vh] data-[vaul-drawer-direction=top]:desktop:max-h-[60vh] data-[vaul-drawer-direction=top]:sm:rounded-none overflow-hidden data-[vaul-drawer-direction=top]:sm:mb-0">
           <DrawerTitle className="hidden">Search</DrawerTitle>
           <div
             data-widget="SearchTrigger"
-            className="w-full h-full relative laptop:max-w-[1115px] mx-auto tablet:py-7  laptop:py-5 desktop:py-[50px]"
+            className="w-full h-full relative laptop:max-w-[1115px] mx-auto tablet:py-7 laptop:py-5 desktop:py-[50px]"
           >
             <DrawerClose className="mobile:hidden absolute end-0 bg-white top-5 z-10 flex items-center justify-center pe-5 w-10 h-5 rounded-full cursor-pointer">
               <X size={13} className="text-black" />
             </DrawerClose>
+
             <Form
               onSubmit={handleSubmit}
               onChange={handleChange}
@@ -60,6 +62,7 @@ const SearchTrigger = () => {
                 <div className="absolute start-5 tablet:start-0 top-[50%] translate-y-[-50%] w-6 h-6 flex items-center justify-center">
                   <Search size={18} />
                 </div>
+
                 <TextInput
                   id="search_input"
                   type="text"
@@ -72,6 +75,7 @@ const SearchTrigger = () => {
                   className="mb-0 h-16"
                   inputClassName="!h-16 px-12 tablet:px-9 transition ease-in-out duration-300 focus:border-transparent focus:border-b-[#D5D5D5] border-transparent border-b-[#D5D5D5]"
                 />
+
                 <Relevant
                   when={({ formState }) => formState.values.search_input}
                 >
@@ -84,6 +88,7 @@ const SearchTrigger = () => {
                   </button>
                 </Relevant>
               </div>
+
               <AutoComplete toggle={toggle} />
             </Form>
           </div>

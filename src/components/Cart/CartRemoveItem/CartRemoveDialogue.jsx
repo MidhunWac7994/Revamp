@@ -5,7 +5,7 @@ import Spinner from "../../Spinner/Spinner";
 import { useGlobalData } from "../../../CustomHook/useGlobalData";
 import ForLoginUser from "./ForLoginUsers/ForLoginUser";
 
-const CartRemoveDialog = (props) => {
+const CartRemoveDialogue = (props) => {
   const {
     setFalse,
     mutateLocalApi,
@@ -33,6 +33,11 @@ const CartRemoveDialog = (props) => {
   return (
     product?.length > 0 && (
       <>
+        {/* Heading inside dialog */}
+        <h2 className="text-xl font-lora text-black mb-4">
+          Remove this item from your bag?
+        </h2>
+
         <div
           data-widget="CartRemoveDialog"
           className="max-h-[250px] laptop:max-h-[50vh] desktop-xl:max-h-[60vh] overflow-y-auto search-wrap group mt-7"
@@ -72,7 +77,7 @@ const CartRemoveDialog = (props) => {
             <ForLoginUser
               handleRemove={handleRemove}
               deletingItem={deletingItem}
-              productsToWishlist={productsToWishlist} // Fixed typo
+              productsToWishlist={productsToWishlist}
             />
           ) : (
             <Button
@@ -102,4 +107,4 @@ const CartRemoveDialog = (props) => {
   );
 };
 
-export default CartRemoveDialog;
+export default CartRemoveDialogue;

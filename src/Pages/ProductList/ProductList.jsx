@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import useProductListing from "./useProductListing";
 import ProductBreadcrumb from "./ProductBreadcrumb";
 import FilterSidebar from "./FilterSidebar";
@@ -23,7 +23,13 @@ import {
 import { Button } from "../../components/components/ui/button";
 
 const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
-  const { locale } = useParams();
+  const { locale, page } = useParams();
+  const navigate = useNavigate();
+  
+  
+
+  const initialPage = parseInt(page, 10) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [isFilterVisible, setIsFilterVisible] = useState(true);
 
   const {
@@ -31,12 +37,11 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
     data,
     filters,
     sortOption,
-    currentPage,
-    setCurrentPage,
+    setCurrentPage: setListingPage,
     handleFilterChange,
     handleSortChange,
     topRef,
-  } = useProductListing(categoryId);
+  } = useProductListing(categoryId, currentPage);
 
   const products = data?.products?.items || [];
   const aggregations = data?.products?.aggregations || [];
@@ -46,8 +51,27 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
   const startItem = (currentPage - 1) * PAGE_SIZE + 1;
   const endItem = Math.min(currentPage * PAGE_SIZE, totalCount);
 
-  console.log(products, "products");
-  console.log(aggregations, "aggregations");
+  useEffect(() => {
+    if (topRef?.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (currentPage !== initialPage) {
+      navigate(`/${locale}/${categoryUrlKey}/${currentPage}`, {
+        replace: false,
+      });
+    }
+    setListingPage(currentPage); 
+  }, [
+    currentPage,
+    initialPage,
+    locale,
+    categoryUrlKey,
+    navigate,
+    setListingPage,
+  ]);
 
   return (
     <div>
@@ -142,7 +166,6 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                 {products.map((product) => (
                   <li key={product.id} className="group p-4">
                     <Link to={`/${locale}/${product.url_key}`}>
-                      {" "}
                       <div className="relative w-full aspect-[3/4] overflow-hidden">
                         <img
                           src={product.image?.url}
@@ -157,7 +180,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
 
                         {product.wac_catalog_label?.label_text && (
                           <span
-                            className="absolute top-2 left-2 px-3 py-1 text-xs min-w-[70px]  min-h-[20px] text-center inline-block"
+                            className="absolute top-2 left-2 px-3 py-1 text-xs min-w-[70px] min-h-[20px] text-center inline-block"
                             style={{
                               backgroundColor:
                                 product.wac_catalog_label.background_color,
@@ -177,7 +200,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                           2
                         )}
                       </p>
-                      <AddToCartButton 
+                      <AddToCartButton
                         productId={product.id}
                         productName={product.name}
                         productSku={product.sku}
@@ -198,24 +221,27 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                       </PaginationItem>
                     )}
 
-                    {[1, 2, 3]
-                      .filter((page) => page <= totalPages)
-                      .map((page) => (
-                        <PaginationItem key={page}>
+                    {[...Array(totalPages).keys()]
+                      .map((i) => i + 1)
+                      .filter(
+                        (pageNum) =>
+                          pageNum === 1 ||
+                          pageNum === totalPages ||
+                          Math.abs(pageNum - currentPage) <= 1
+                      )
+                      .map((pageNum, index, arr) => (
+                        <PaginationItem key={pageNum}>
+                          {index > 0 && pageNum - arr[index - 1] > 1 ? (
+                            <PaginationEllipsis />
+                          ) : null}
                           <PaginationLink
-                            isActive={page === currentPage}
-                            onClick={() => setCurrentPage(page)}
+                            isActive={pageNum === currentPage}
+                            onClick={() => setCurrentPage(pageNum)}
                           >
-                            {page}
+                            {pageNum}
                           </PaginationLink>
                         </PaginationItem>
                       ))}
-
-                    {totalPages > 3 && (
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    )}
 
                     {currentPage < totalPages && (
                       <PaginationItem>
@@ -232,7 +258,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
         </div>
       </div>
 
-      <div ref={topRef} />
+      <div ref={topRef} />     
     </div>
   );
 };

@@ -1,12 +1,9 @@
 // UrlResolver.jsx
 import React, { useEffect, useMemo } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ProductList from "../Pages/ProductList/ProductList";
-import ProductDetail from  "../Pages//ProductDetail/ProductDetail";
-// import StaticPage from "@/pageRoutes/StaticPage";
-// import DynamicPages from "@/pageRoutes/DynamicPages";
-// import FullPageLoader from "@/components/FullPageLoader";
+import ProductDetail from "../Pages/ProductDetail/ProductDetail";
 
 const URL_RESOLVER_QUERY = gql`
   query GeturlResolver($url: String!) {
@@ -30,16 +27,18 @@ const URL_RESOLVER_QUERY = gql`
 `;
 
 const UrlResolver = () => {
-  const { "*": urlPath } = useParams();
-  const location = useLocation();
+  const { "*": wildcardPath } = useParams();
   const navigate = useNavigate();
 
-  const flatUrl = useMemo(() => urlPath || "", [urlPath]);
+  const pathSegments = (wildcardPath || "").split("/").filter(Boolean);
+  const flatUrl = pathSegments[0] || ""; // e.g., "living-room"
+  const page = parseInt(pathSegments[1], 10) || 1;
 
   const { loading, error, data } = useQuery(URL_RESOLVER_QUERY, {
     variables: { url: flatUrl },
   });
-
+ 
+   
   useEffect(() => {
     if (
       !loading &&
@@ -50,24 +49,26 @@ const UrlResolver = () => {
     }
   }, [data, loading, navigate]);
 
-
   if (error || !data?.urlResolver?.id) return <h1>404 - Not Found</h1>;
 
   const resolver = data.urlResolver;
   const pageType = resolver.type;
   const cmsPageType = resolver.cms_type;
-  // console.log(resolver, "resolver");
-  // console.log(pageType, "pageType");
-  // console.log(cmsPageType, "cmsPageType");
+
   const renderPage = () => {
     switch (pageType) {
       case "CATEGORY":
-        return <ProductList categoryId={parseInt(resolver.id)} />;
+        return (
+          <ProductList
+            categoryId={parseInt(resolver.id)}
+            categoryName={flatUrl.replace(/-/g, " ")}
+            categoryUrlKey={flatUrl}
+            page={page}
+          />
+        );
 
       case "PRODUCT":
-        return (
-          <ProductDetail url={flatUrl} pageType={pageType} />
-        );
+        return <ProductDetail url={flatUrl} pageType={pageType} />;
 
       case "CMS_PAGE":
         switch (cmsPageType) {
@@ -82,11 +83,8 @@ const UrlResolver = () => {
         return <h1>404 - Page Not Found</h1>;
     }
   };
-  // console.log("flatUrl", flatUrl);
-  // console.log("urlResolver response", data); 
 
   return renderPage();
 };
 
 export default UrlResolver;
-  

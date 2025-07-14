@@ -1,4 +1,3 @@
-// File: AuthLogin.js
 import { Form } from "informed";
 import {
   SIGN_IN_INITIAL_VIEW,
@@ -15,6 +14,7 @@ import { Mail } from "lucide-react";
 import { Progress } from "../../../../components/components/ui/progress";
 
 const AuthLogin = ({ onClose }) => {
+  console.log("🔍 AuthLogin received onClose:", typeof onClose);
   const {
     formApiRef,
     handleSubmit,
@@ -24,7 +24,7 @@ const AuthLogin = ({ onClose }) => {
     loadingOtp,
     handleAuthView,
     username,
-  } = useAuthLogin(onClose); 
+  } = useAuthLogin(onClose);
 
   return (
     <>

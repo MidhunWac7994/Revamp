@@ -1,6 +1,7 @@
 import { useQuery, gql } from "@apollo/client";
 import useCartConfig from "./useCartConfig";
 
+
 const GET_CART_DETAILS = gql`
   query GetCartDetails($cartId: String!) {
     cart(cart_id: $cartId) {
@@ -11,22 +12,17 @@ const GET_CART_DETAILS = gql`
         id
         quantity
         is_stock_available_for_item
+        homedelivery_stock
+        store_pickup_available
         strike_price
         __typename
-
+        # Configurable Item Section
         ... on ConfigurableCartItem {
           configured_variant {
             __typename
             type_id
             sku
             name
-            custom_attribute_details(
-              attribute_codes: ["color", "product_model", "orientation"]
-            ) {
-              code
-              value
-              label
-            }
             price_range {
               minimum_price {
                 regular_price {
@@ -47,6 +43,7 @@ const GET_CART_DETAILS = gql`
               }
             }
           }
+
           customizable_options {
             label
             id
@@ -60,6 +57,7 @@ const GET_CART_DETAILS = gql`
           }
         }
 
+        # Simple Item Section
         ... on SimpleCartItem {
           customizable_options {
             label
@@ -83,13 +81,6 @@ const GET_CART_DETAILS = gql`
           stock_status
           thumbnail {
             url
-          }
-          custom_attribute_details(
-            attribute_codes: ["color", "product_model", "orientation"]
-          ) {
-            code
-            value
-            label
           }
           price_range {
             minimum_price {
@@ -130,7 +121,6 @@ const GET_CART_DETAILS = gql`
             }
           }
         }
-
         prices {
           custom_row_total_price {
             maximum_price {

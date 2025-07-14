@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "../components/ui/navigation-menu";
 import {
   Dialog,
@@ -20,6 +18,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetClose,
 } from "../components/ui/sheet";
 import { Search, User, Heart, ShoppingBag, Globe } from "lucide-react";
 import { gql, useQuery } from "@apollo/client";
@@ -37,7 +36,9 @@ const TOP_MENU = gql`
 export default function Header() {
   const [count, setCount] = useState(0);
   const { locale } = useParams();
+  const location = useLocation();
   const { data } = useQuery(TOP_MENU);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);                                                                         
 
   const { cartItems = [], totalQuantity = 0 } = useCartItemsSummary();
 
@@ -47,15 +48,41 @@ export default function Header() {
     setCount(totalQuantity);
   }, [totalQuantity]);
 
+  const isHomePage =
+    location.pathname === `/${locale}` || location.pathname === `/${locale}/`;
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    if (isHomePage) {
+      const handleScroll = () => {
+        setIsScrolled(window.scrollY > 0);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else {
+      setIsScrolled(true);
+    }
+  }, [isHomePage]);
+
+  const handleAuthDialogClose = () => {
+    console.log("🔍 Header: handleAuthDialogClose called");
+    setIsAuthDialogOpen(false);
+  };
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm flex items-center justify-between px-8 py-7">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-7 transition-colors duration-300 ${
+        isScrolled ? "bg-white shadow-sm" : "bg-transparent"
+      }`}
+    >
       {/* Left - Logo */}
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <Link to={`/${locale}`}>
               <img
-                src="/logo.svg"
+                src={isScrolled ? "/logo.svg" : "/logo-white.svg"}
                 alt="Brand Logo"
                 className="h-auto w-auto cursor-pointer"
               />
@@ -64,71 +91,136 @@ export default function Header() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <NavigationMenu className="hidden lg:flex">
-        <NavigationMenuList className="flex gap-2">
-          {topMenuItems.map((mainMenuItem) =>
-            mainMenuItem.link_type === "custom_link" &&
-            mainMenuItem?.children?.content ? (
-              <NavigationMenuItem key={mainMenuItem.id}>
-                <NavigationMenuTrigger className="text-xl hover:text-emerald-500">
-                  {mainMenuItem.name}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-white p-4 shadow-lg rounded-md">
-                  <div className="grid gap-3 min-w-[200px]">
-                    {mainMenuItem.children.content.map((menuItem) => (
-                      <Link
-                        key={menuItem.id}
-                        to={`/${locale}/${menuItem.link}`}
-                        className="text-sm text-gray-700 hover:text-emerald-500 cursor-pointer p-2"
-                      >
-                        {menuItem.name}
-                      </Link>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ) : (
-              <NavigationMenuItem key={mainMenuItem.id}>
-                <Link
-                  to={`/${locale}/${mainMenuItem.link}`}
-                  className={`text-xl py-2 px-3 cursor-pointer text-gray-700 hover:text-emerald-500 ${
-                    mainMenuItem.name === "Sale" ? "text-emerald-500" : ""
+      {/* Main Navigation */}
+      <nav className="hidden lg:flex gap-4">
+        {topMenuItems.map((mainMenuItem) =>
+          mainMenuItem.link_type === "custom_link" &&
+          mainMenuItem?.children?.content ? (
+            <Sheet key={mainMenuItem.id}>
+              <SheetTrigger asChild>
+                <button
+                  className={`text-base font-sans font-normal cursor-pointer transition-colors duration-300 ${
+                    isScrolled
+                      ? "text-gray-700 hover:text-emerald-500"
+                      : "text-white hover:text-emerald-300"
                   }`}
                 >
                   {mainMenuItem.name}
-                </Link>
-              </NavigationMenuItem>
-            )
-          )}
-        </NavigationMenuList>
-      </NavigationMenu>
+                </button>
+              </SheetTrigger>
+              <SheetContent
+                side="top"
+                className="w-full max-w-full p-6 flex flex-col bg-white shadow-lg"
+              >
+                <SheetHeader>
+                  <SheetTitle className="text-2xl font-semibold mb-4">
+                    {mainMenuItem.name}
+                  </SheetTitle>
+                  <SheetClose asChild>
+                    <button className="mb-4 self-end text-gray-500 hover:text-gray-900">
+                      Close
+                    </button>
+                  </SheetClose>
+                </SheetHeader>
 
+                <div className="flex flex-col gap-3 overflow-y-auto max-h-[60vh]">
+                  {mainMenuItem.children.content.map((menuItem) => (
+                    <Link
+                      key={menuItem.id}
+                      to={`/${locale}/${menuItem.link}`}
+                      className="flex gap-3 items-center p-2 hover:bg-gray-100 rounded"
+                    >
+                      {menuItem.image_content?.image_url && (
+                        <img
+                          src={menuItem.image_content.image_url}
+                          alt={menuItem.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium">{menuItem.name}</p>
+                        {menuItem.image_content?.text && (
+                          <p className="text-sm text-gray-600">
+                            {menuItem.image_content.text}
+                          </p>
+                        )}
+                        {menuItem.image_content?.subtext && (
+                          <p className="text-xs text-gray-400">
+                            {menuItem.image_content.subtext}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <Link
+              key={mainMenuItem.id}
+              to={`/${locale}/${mainMenuItem.link}`}
+              className={`text-base font-sans font-normal py-2 px-3 cursor-pointer transition-colors duration-300 ${
+                isScrolled
+                  ? "text-gray-700 hover:text-emerald-500"
+                  : "text-white hover:text-emerald-300"
+              } ${
+                mainMenuItem.name === "Sale" &&
+                (isScrolled ? "text-emerald-500" : "text-emerald-300")
+              }`}
+            >
+              {mainMenuItem.name}
+            </Link>
+          )
+        )}
+      </nav>
+
+      {/* Right Icons */}
       <div className="flex items-center gap-4">
-        <Globe className="h-5 w-5 text-gray-700" />
+        <Globe
+          className={`h-5 w-5 transition-colors duration-300 ${
+            isScrolled ? "text-gray-700" : "text-white"
+          }`}
+        />
 
         <SearchTrigger>
-          <Search className="h-5 w-5 text-gray-700 cursor-pointer" />
+          <Search
+            className={`h-5 w-5 cursor-pointer transition-colors duration-300 ${
+              isScrolled ? "text-gray-700" : "text-gray-300"
+            }`}
+          />
         </SearchTrigger>
 
-        <Dialog>
+        <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
           <DialogTrigger asChild>
-            <User className="h-5 w-5 text-gray-700 cursor-pointer" />
+            <User
+              className={`h-5 w-5 cursor-pointer transition-colors duration-300 ${
+                isScrolled ? "text-gray-700" : "text-white"
+              }`}
+            />
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogTitle />
             <DialogDescription />
-            <AuthBlocks />
+            <AuthBlocks onClose={handleAuthDialogClose} />
           </DialogContent>
         </Dialog>
 
-        <Heart className="h-5 w-5 text-gray-700" />
+        <Heart
+          className={`h-5 w-5 transition-colors duration-300 ${
+            isScrolled ? "text-gray-700" : "text-white"
+          }`}
+        />
 
         <Sheet>
           <SheetTrigger asChild>
             <div className="relative cursor-pointer">
-              <ShoppingBag className="h-5 w-5 text-gray-700" />
+              <ShoppingBag
+                className={`h-5 w-5 transition-colors duration-300 ${
+                  isScrolled ? "text-gray-700" : "text-white"
+                }`}
+              />
               {count > 0 && (
-                <span className="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#2cb5a7] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {count}
                 </span>
               )}
@@ -158,18 +250,22 @@ export default function Header() {
               </div>
 
               <div className="px-4 pb-6 pt-4 border-t border-gray-200 flex flex-col gap-3">
-                <Link
-                  to={`/${locale}/cart`}
-                  className="w-full text-center py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
-                >
-                  View Cart
-                </Link>
-                <Link
-                  to={`/${locale}/checkout`}
-                  className="w-full text-center py-3 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
-                >
-                  Proceed to Checkout
-                </Link>
+                <SheetClose asChild>
+                  <Link
+                    to={`/${locale}/cart`}
+                    className="w-full text-center py-3 border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    View Cart
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link
+                    to={`/${locale}/checkout`}
+                    className="w-full text-center py-3 bg-[#2cb5a7] text-white rounded-none"
+                  >
+                    Proceed to Checkout
+                  </Link>
+                </SheetClose>
               </div>
             </div>
           </SheetContent>

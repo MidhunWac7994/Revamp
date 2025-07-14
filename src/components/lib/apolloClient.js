@@ -19,8 +19,8 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
-  usesGETForQueries: true, // Use GET for queries
-});
+  usesGETForQueries: true,
+});                                                                                          
 
 console.log("API Endpoint:", import.meta.env.VITE_API_ENDPOINT);
 

@@ -10,7 +10,7 @@ const CartButtons = (props) => {
 
   const { isSignedIn } = useGlobalData();
   const guestData = getLocalStorageWithExpiry(GUEST_USER_KEY);
-  const { mobile } = guestData || {};
+  const { mobile } = guestData || {};   
 
   const guestUrl = mobile
     ? `/guest-checkout?step=customer_address`
@@ -19,15 +19,15 @@ const CartButtons = (props) => {
 
   return (
     <Link to={`/${locale}/checkout`}>
-      <Button
-        className={`w-full max-w-full mt-6 h-14 rounded-none bg-[#56c4b9] text-white ${
+      <button
+        className={`w-full max-w-full mt-6 h-14 rounded-none  bg-[#2cb5a7] text-white  ${
           !isInStock ? "pointer-events-none cursor-not-allowed " : ""
         }`}
         size="xl"
         disabled={!isInStock}
       >
         Checkout
-      </Button>
+      </button>
     </Link>
   );
 };

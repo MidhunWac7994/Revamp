@@ -22,7 +22,6 @@ const CartRemoveItem = (props) => {
       status={isCheckout ? statusCheckout : status}
       toggle={isCheckout ? toggleCheckout : toggle}
       hideButton={hideButton}
-      title="Remove this item from your bag"
       triggerButton={
         <button
           disabled={disabled}

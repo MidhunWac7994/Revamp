@@ -47,7 +47,7 @@ export const getLatLng = (result) =>
 export const getLatLngFromAddress = async (address) => {
   const endpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
     address
-  )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_APIKEY}`;
+  )}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`;
 
   const response = await fetch(endpoint);
   const data = await response.json();

@@ -1,7 +1,7 @@
 import { FormStateAccessor } from "informed";
 import { Button } from "../components/ui/button";
 import { isObjectEmpty } from "../../utils/objectUtil";
-import { Progress } from "../components/ui/progress";
+import Spinner from "../Spinner/Spinner";
 
 const FormSubmitButton = (props) => {
   const {
@@ -33,7 +33,7 @@ const FormSubmitButton = (props) => {
             className="bg-[#56c4b9] text-white hover:opacity-90 disabled:opacity-50"
             {...rest}
           >
-            {loading ? <Progress className="border-white" /> : label}
+            {loading ? <Spinner className="border-white" /> : label}
           </Button>
         );
       }}

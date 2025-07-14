@@ -45,7 +45,7 @@ const useExpectedDelivery = () => {
   }));
 
   const handleLocationChange = async (value) => {
-    let parts = value?.split("|") || [];
+    let parts = value?.value?.split("|") || [];
     const [location] = parts;
 
     if (location) {
@@ -60,6 +60,7 @@ const useExpectedDelivery = () => {
     setSelectedLocation(parts);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parts));
   };
+  
 
   const active = {
     value: selectedLocation,

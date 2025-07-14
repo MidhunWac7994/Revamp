@@ -1,4 +1,3 @@
-// File: useAuthLogin.js
 import { useRef } from "react";
 import { useSetAtom, useAtom } from "jotai";
 import { toast } from "sonner";
@@ -12,7 +11,7 @@ import { useAuthContext } from "../../useAuth";
 import useRequestOtp from "../useRequestOtp";
 import useNewCart from "../../../../CustomHook/useNewcart";
 
-const useAuthLogin = (onSuccess) => {
+const useAuthLogin = (onClose) => {
   const formApiRef = useRef(null);
   const { username, handleAuthView, formDataRef } = useAuthContext();
   const setToken = useSetAtom(authTokenAtom);
@@ -48,6 +47,7 @@ const useAuthLogin = (onSuccess) => {
         const { status, token, message } = response?.loginUsingPassword || {};
 
         if (status) {
+          console.log("✅ Login successful, token:", token);
           setToken(token);
           clearAuthParam();
           formApiRef?.current?.reset();
@@ -65,16 +65,20 @@ const useAuthLogin = (onSuccess) => {
             });
 
             let finalCartId = mergeCarts?.id || newCartId;
-            console.log(finalCartId, "finalCartId");
+            console.log("✅ finalCartId:", finalCartId);
             setCartId(finalCartId);
-            // localStorage.setItem("customer_cart_id", finalCartId);
             localStorage.removeItem("guest_cart_id");
           } catch (cartError) {
             console.error("❌ Cart setup failed:", cartError);
           }
 
-          if (typeof onSuccess === "function") {
-            onSuccess();
+          // Debug onClose
+          console.log("🔍 onClose type:", typeof onClose);
+          if (typeof onClose === "function") {
+            console.log("🔍 Calling onClose");
+            onClose();
+          } else {
+            console.warn("⚠️ onClose is not a function:", onClose);
           }
         } else {
           toast.error(message || "Login failed", {
@@ -83,6 +87,7 @@ const useAuthLogin = (onSuccess) => {
         }
       },
       onError: (err) => {
+        console.error("❌ Login error:", err);
         toast.error(err.message || "Something went wrong", {
           id: "login-error",
         });
@@ -91,6 +96,7 @@ const useAuthLogin = (onSuccess) => {
   );
 
   const handleSubmit = async (formValues) => {
+    console.log("🔍 Submitting form with username:", username);
     const { password } = formValues.values;
     loginWithPassword({
       variables: {

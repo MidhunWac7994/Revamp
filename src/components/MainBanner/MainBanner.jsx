@@ -10,7 +10,7 @@ import { Button } from "../components/ui/button";
 
 const MainBanner = ({ homeData }) => {
   const slides = homeData?.content || [];
-    const { locale } = useParams(); 
+  const { locale } = useParams();
 
   return (
     slides.length > 0 && (
@@ -18,7 +18,7 @@ const MainBanner = ({ homeData }) => {
         <Carousel
           plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
         >
-          <CarouselContent className="h-[70vh] md:h-[90vh] relative">
+          <CarouselContent className="h-screen relative">
             {slides.map((slide) => (
               <CarouselItem key={slide.id} className="relative">
                 <div className="relative w-full h-full">
@@ -39,24 +39,25 @@ const MainBanner = ({ homeData }) => {
                     />
                   )}
 
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
-                    <h4 className="t text-white uppercase font-light text-16 mobile:text-18 mb-3 block">
+                  <div className="absolute inset-0 flex flex-col items-start justify-center text-white px-4 md:px-8 mt-80 ml-10">
+                    <h4 className="text-white uppercase font-light text-16 mobile:text-18 mb-3">
                       {slide.sub_title || "INTRODUCING"}
                     </h4>
-                    <h2 className=" text-white font-lora mobile:text-[96px] text-[55px] leading-[1.1]">
+                    <h1 className="text-white font-serif text-[36px] sm:text-[60px] md:text-[72px] lg:text-[90px] leading-[1.1] font-extrabold tracking-tight drop-shadow-lg">
                       {slide.titles}
-                    </h2>
+                    </h1>
+
                     <Button
                       size={"xl"}
                       variant={"white"}
                       className={
-                        "mt-9 max-w-50 w-max min-w-[173px] rounded-none"
+                        "mt-9 max-w-50 w-max min-w-[173px] h-14 rounded-none"
                       }
                       asChild
                     >
                       <Link
                         to={`/${locale}/${slide.link}`}
-                        className="bg-white text-black px-8 py-3 font-medium hover:bg-opacity-90 transition duration-300 rounded-none"
+                        className="bg-white text-black px-8 py-3 font-medium hover:bg-[#2cb5a4] hover:text-white transition duration-300 rounded-none"
                       >
                         {slide.button_text}
                       </Link>
