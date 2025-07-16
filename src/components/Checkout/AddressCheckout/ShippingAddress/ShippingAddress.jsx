@@ -1,3 +1,4 @@
+
 import AddressItem from "../../../AddressItem/AddressItem";
 
 const ShippingAddress = (props) => {
@@ -13,11 +14,11 @@ const ShippingAddress = (props) => {
   return (
     <div
       data-widget="ShippingAddress"
-      className={`grid grid-cols-1 tabletPro:grid-cols-2 gap-3`}
+      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
     >
       {addressData?.map((address, index) => (
         <AddressItem
-          key={address?.id ? address?.id : index}
+          key={address?.id || index}
           address={address}
           activeAddress={shippingAddressIdOnCart === address?.id}
           updateAddressOnCart={updateShippingAddress}

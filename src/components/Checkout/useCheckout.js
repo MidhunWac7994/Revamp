@@ -12,12 +12,11 @@ const useCheckout = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const purchaseMethod = searchParams.get("type") || "home_delivery";
-  const activeAccordion = searchParams.get("step") || "customer_info"; // Default to "customer_info"
+  const activeAccordion = searchParams.get("step") || "customer_info"; 
 
-  // Initialize disabled state with guest data consideration
   const [disabled, setDisabled] = useState({
-    customer_info: false, // Always enabled
-    customer_address: !(isSignedIn || guestData?.mobile), // Enable if signed in or guest data exists
+    customer_info: false, 
+    customer_address: !(isSignedIn || guestData?.mobile), 
     shipping: true,
     payment: true,
   });
@@ -34,9 +33,8 @@ const useCheckout = (props) => {
     });
   };
 
-  const changeCurrentAccordion = (id, type) => {
-    if (id && !disabled[id]) {
-      // Only change if not disabled
+  const changeCurrentAccordion = (id, type, force = false) => {
+    if (id && (force || !disabled[id])) {
       console.log(`Changing accordion to: ${id}`);
       setSearchParams((prev) => {
         const newParams = new URLSearchParams(prev);
@@ -57,6 +55,8 @@ const useCheckout = (props) => {
       console.warn(`Cannot open ${id} because it is disabled`);
     }
   };
+  
+  
 
   const activeShippingMethod =
     purchaseMethod === "home_delivery"
@@ -90,7 +90,7 @@ const useCheckout = (props) => {
     });
     setDisabled((prev) => ({
       ...prev,
-      customer_info: false, // Always enabled
+      customer_info: false, 
       customer_address: !(isSignedIn || guestData?.mobile), // Enable if signed in or guest data
       shipping: !userVisited.includes("shipping"),
       payment: !userVisited.includes("payment"),

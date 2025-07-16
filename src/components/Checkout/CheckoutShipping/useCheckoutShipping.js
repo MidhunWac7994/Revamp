@@ -83,7 +83,7 @@ const useCheckoutShipping = (props) => {
 
   const confirmShippingMethod = () => {
     handleDisabledAccordion(["shipping", "payment"], false);
-    changeCurrentAccordion("payment");
+    changeCurrentAccordion("payment",null,true);
   };
 
   let warningMsg = [

@@ -42,7 +42,7 @@ const AuthLogin = ({ onClose }) => {
           onSubmit={handleSubmit}
           data-widget="AuthLogin"
         >
-          <div className="relative">
+          <div style={{ marginTop: "18px" }}>
             <Password
               name="password"
               className="border-black"

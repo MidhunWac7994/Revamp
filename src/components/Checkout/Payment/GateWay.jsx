@@ -1,10 +1,6 @@
-import Spinner from "../../Spinner/Spinner";    
-import { Button } from "../../../components/components/ui/button";
-
 const Gateway = ({
   handleChangePaymentMode,
   mode,
-  handlePlaceOrder,
   placeOrderLoading,
   settingPaymentMethod,
   isLoading,
@@ -17,7 +13,7 @@ const Gateway = ({
     <div className="gateway-wrapper">
       <button
         onClick={() => handleChangePaymentMode(mode?.code)}
-        className="payment-option-button"
+        className="payment-option-button flex items-center gap-3"
         disabled={
           isLoading ||
           settingPaymentMethod ||
@@ -25,30 +21,24 @@ const Gateway = ({
           placeOrderLoading
         }
       >
+        {/* Radio-like circle */}
         <span className={`radio-outer ${isSelected ? "radio-active" : ""}`}>
           <span
             className={`radio-inner ${isSelected ? "visible" : "hidden"}`}
           ></span>
         </span>
-        {mode?.title}
-      </button>
 
-      {isSelected && (
-        <div className="pay-now-wrapper">
-          <Button
-            disabled={placeOrderLoading || isRedirecting}
-            variant="primary"
-            size="xl"
-            onClick={handlePlaceOrder}
-          >
-            {placeOrderLoading || isRedirecting ? (
-              <Spinner className="border-white" />
-            ) : (
-              "Pay Now"
-            )}
-          </Button>
-        </div>
-      )}
+        {/* Native radio for accessibility */}
+        <input
+          type="radio"
+          checked={isSelected}
+          onChange={() => handleChangePaymentMode(mode?.code)}
+          className="form-radio accent-primary cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
+        />
+
+        <span>{mode?.title}</span>
+      </button>
     </div>
   );
 };

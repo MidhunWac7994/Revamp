@@ -15,21 +15,21 @@ const CustomAccordionItem = ({
   completed = {},
 }) => {
   // Log props for debugging
-  console.log(`CustomAccordionItem (${eventKey}):`, {
-    disabled: disabled[eventKey],
-    completed: completed[eventKey],
-  });
+  // console.log(`CustomAccordionItem (${eventKey}):`, {
+  //   disabled: disabled[eventKey],
+  //   completed: completed[eventKey],
+  // });
 
   return (
     <AccordionItem
       data-widget="CustomAccordionItem"
       disabled={disabled[eventKey]}
       value={eventKey}
-      className="border-b border-[#EDEDED]"
+      className="border w-3xl bg-black border-[#EDEDED] rounded-none"
     >
       <AccordionTrigger
         className={cn(
-          "bg-white px-6 py-4 flex items-center justify-between group disabled:opacity-100 text-black data-[state=open]:bg-black data-[state=open]:text-white"
+          "bg-white px-6 py-4  rounded-none flex items-center justify-between group disabled:opacity-100 text-black data-[state=open]:bg-black data-[state=open]:text-white"
         )}
         onClick={() => console.log(`Clicked accordion: ${eventKey}`)}
       >

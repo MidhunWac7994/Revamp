@@ -14,7 +14,7 @@ const CheckoutPage = () => {
     /* </ProtectedRoute>
     </Suspense> */
 
-    <div className="mt-56">
+    <div className="mt-32">
       <Checkout customerAddress={customerAddress} />
     </div>
   );

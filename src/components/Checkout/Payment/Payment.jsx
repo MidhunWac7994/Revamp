@@ -39,7 +39,8 @@ const Payment = () => {
 
   return (
     <div className="p-6 bg-white">
-      <h3 className="text-xl font-semibold mb-5">Payment Methods</h3>
+      <h3 className="text-xl from-neutral-300 mb-5">Payment Methods</h3>
+      <hr className="border-t border-gray-200 mb-5" />
 
       {isLoading ? (
         <div className="animate-pulse">
@@ -75,6 +76,7 @@ const Payment = () => {
 
       <div className="mt-6">
         <Button
+          className="w-40 mt-6 h-14 rounded-none  bg-[#2cb5a7] text-white"
           disabled={placeOrderLoading || isRedirecting}
           variant="primary"
           size="lg"

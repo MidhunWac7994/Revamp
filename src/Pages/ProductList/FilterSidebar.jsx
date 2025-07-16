@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Slider } from "../../components/components/ui/slider";
 import {
   Accordion,
@@ -6,63 +6,30 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "../../components/components/ui/accordion";
+import useFilterSidebar from "./useFilterSidebar";
 
 const FilterSidebar = ({
-  aggregations = [], 
+  aggregations = [],
   onFilterChange,
   initialFilters,
   isVisible,
   toggleVisibility,
 }) => {
-  const [filters, setFilters] = useState(initialFilters || {});
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-  const [openItem, setOpenItem] = useState(null);
-
-  useEffect(() => {
-    setFilters(initialFilters || {});
-    if (initialFilters?.price?.[0]) {
-      const [min, max] = initialFilters.price[0].split("_").map(Number);
-      setPriceRange([min, max]);
-    }
-  }, [initialFilters]);
-
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      onFilterChange(filters);
-    }, 100);
-    return () => clearTimeout(debounce);
-  }, [filters]);
-
-  const handleAccordionChange = (value) => setOpenItem(value);
-
-  const handleCheckboxChange = (attributeCode, value) => {
-    setFilters((prev) => {
-      const updated = { ...prev };
-      const current = new Set(prev[attributeCode] || []);
-      current.has(value) ? current.delete(value) : current.add(value);
-      updated[attributeCode] = current.size ? [...current] : undefined;
-      return updated;
-    });
-  };
-
-  const handlePriceChange = (newRange) => {
-    setPriceRange(newRange);
-    setFilters((prev) => ({
-      ...prev,
-      price: [`${newRange[0]}_${newRange[1]}`],
-    }));
-  };
-
-  const getOptionLabel = (code, value) => {
-    const aggregation = aggregations.find((agg) => agg.attribute_code === code);
-    return (
-      aggregation?.options?.find((opt) => opt.value === value)?.label || value
-    );
-  };
+  const {
+    filters,
+    priceRange,
+    openItem,
+    visibleCounts,
+    handleAccordionChange,
+    handleCheckboxChange,
+    handlePriceChange,
+    handleShowMore,
+    handleShowLess,
+    getOptionLabel,
+  } = useFilterSidebar(initialFilters, aggregations, onFilterChange);
 
   return (
     <div className={`filter-sidebar ${isVisible ? "block" : "hidden"}`}>
-     
       <div className="mb-4">
         <button
           onClick={toggleVisibility}
@@ -74,7 +41,6 @@ const FilterSidebar = ({
 
       {isVisible && (
         <>
-
           {Object.keys(filters).length > 0 && (
             <div className="selected-options flex flex-wrap gap-2 mb-4">
               {Object.entries(filters).flatMap(([code, values]) =>
@@ -96,11 +62,10 @@ const FilterSidebar = ({
                       </div>
                     ))
                   : []
-              )}  
+              )}
             </div>
           )}
 
-          {/* Accordion with Filters */}
           <Accordion
             type="single"
             collapsible
@@ -109,62 +74,89 @@ const FilterSidebar = ({
           >
             {aggregations
               ?.filter((agg) => agg.attribute_code !== "category_uid")
-              .map((aggregation) => (
-                <AccordionItem
-                  key={aggregation.attribute_code}
-                  value={aggregation.attribute_code}
-                >
-                  <AccordionTrigger className="text-lg">
-                    {aggregation.label}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    {aggregation.attribute_code === "price" ? (
-                      <div className="relative w-64 mb-4">
-                        <Slider
-                          value={priceRange}
-                          onValueChange={handlePriceChange}
-                          min={0}
-                          max={1000}
-                          step={10}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between w-full mt-3 pb-3">
-                          <span>{`KWD ${priceRange[0]}`}</span>
-                          <span className="ml-auto">{`KWD ${priceRange[1]}`}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      aggregation.options?.map((option) => (
-                        <div
-                          key={option.value}
-                          className="checkbox-container mb-2"
-                        >
-                          <input
-                            type="checkbox"
-                            id={`${aggregation.attribute_code}-${option.value}`}
-                            checked={
-                              filters[aggregation.attribute_code]?.includes(
-                                option.value
-                              ) || false
-                            }
-                            onChange={() =>
-                              handleCheckboxChange(
-                                aggregation.attribute_code,
-                                option.value
-                              )
-                            }
+              .map((aggregation) => {
+                const { attribute_code, label, options = [] } = aggregation;
+                const visibleCount = visibleCounts[attribute_code] || 4;
+                const totalOptions = options.length;
+                const visibleOptions = options.slice(0, visibleCount);
+
+                return (
+                  <AccordionItem key={attribute_code} value={attribute_code}>
+                    <AccordionTrigger className="text-lg">
+                      {label}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      {attribute_code === "price" ? (
+                        <div className="relative w-64 mb-4">
+                          <Slider
+                            value={priceRange}
+                            onValueChange={handlePriceChange}
+                            min={0}
+                            max={1000}
+                            step={10}
+                            className="w-full"
                           />
-                          <label
-                            htmlFor={`${aggregation.attribute_code}-${option.value}`}
-                          >
-                            {option.label}
-                          </label>
+                          <div className="flex justify-between w-full mt-3 pb-3">
+                            <span>{`KWD ${priceRange[0]}`}</span>
+                            <span className="ml-auto">{`KWD ${priceRange[1]}`}</span>
+                          </div>
                         </div>
-                      )) || []
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
+                      ) : (
+                        <>
+                          {visibleOptions.map((option) => (
+                            <div
+                              key={option.value}
+                              className="checkbox-container mb-2"
+                            >
+                              <input
+                                type="checkbox"
+                                id={`${attribute_code}-${option.value}`}
+                                checked={
+                                  filters[attribute_code]?.includes(
+                                    option.value
+                                  ) || false
+                                }
+                                onChange={() =>
+                                  handleCheckboxChange(
+                                    attribute_code,
+                                    option.value
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor={`${attribute_code}-${option.value}`}
+                                className="ml-2"
+                              >
+                                {option.label}
+                              </label>
+                            </div>
+                          ))}
+
+                          {totalOptions > 4 && visibleCount < totalOptions && (
+                            <button
+                              onClick={() =>
+                                handleShowMore(attribute_code, totalOptions)
+                              }
+                              className="text-[#2cb5a7] mt-1 ml-4 font-semibold text-sm"
+                            >
+                              More +
+                            </button>
+                          )}
+
+                          {visibleCount > 4 && (
+                            <button
+                              onClick={() => handleShowLess(attribute_code)}
+                              className="text-[#2cb5a7] mt-1 ml-4 font-semibold text-sm"
+                            >
+                              Less -
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
           </Accordion>
         </>
       )}

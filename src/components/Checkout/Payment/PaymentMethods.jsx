@@ -1,5 +1,6 @@
-import Gateway from "./GateWay";
-import { CASH_ON_DELIVERY } from "././../../Constants" 
+import Gateway from "./GateWay"; // If you have other gateways
+import MyFatoorah from "./MyFatoorah";
+import { CASH_ON_DELIVERY, MYFATOORAH } from "./../../Constants";
 
 const PaymentMethods = (props) => {
   const {
@@ -13,21 +14,33 @@ const PaymentMethods = (props) => {
     isLoading,
     isRedirecting,
     active,
+    myFatoorahConfig,
   } = props;
 
-  if (mode?.code === CASH_ON_DELIVERY) {
+  if (mode?.code === MYFATOORAH) {
     return (
-      <Gateway
+      <MyFatoorah
+        myFatoorahConfig={myFatoorahConfig}
         handleChangePaymentMode={handleChangePaymentMode}
-        checked={checked}
         mode={mode}
-        handlePlaceOrder={handlePlaceOrder}
         placeOrderLoading={placeOrderLoading}
-        icon={icon}
         settingPaymentMethod={settingPaymentMethod}
         isLoading={isLoading}
         isRedirecting={isRedirecting}
         active={active}
+        handlePlaceOrder={handlePlaceOrder}
+      />
+    );
+  }
+
+  if (mode?.code === CASH_ON_DELIVERY) {
+    return (
+      <Gateway
+        icon={icon}
+        active={active}
+        mode={mode}
+        checked={checked}
+        handleChangePaymentMode={handleChangePaymentMode}
       />
     );
   }

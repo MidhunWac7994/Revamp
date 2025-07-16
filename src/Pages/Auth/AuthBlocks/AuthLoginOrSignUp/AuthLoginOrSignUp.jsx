@@ -18,16 +18,19 @@ const AuthLoginOrSignUp = () => {
         subTitle="Enter your mobile number or email address"
       />
       <Form onSubmit={handleSubmit} initialValues={initialValues}>
-        <PhoneEmailSwitcherInput
-          name="username"
-          id="floatLogin"
-          placeholder={"EmailPhone"}
-          label={"EmailPhone"}
-          floating={true}
-          validateOn="submit"
-          autoFocus
-          className="border-black"
-        />
+        <div style={{ marginTop: "18px" }}>
+          {" "}
+          <PhoneEmailSwitcherInput
+            name="username"
+            id="floatLogin"
+            placeholder={"EmailPhone"}
+            label={"EmailPhone"}
+            floating={true}
+            validateOn="submit"
+            autoFocus
+            className="border-black"
+          />
+        </div>
 
         <FormSubmitButton
           variant={"primary"}

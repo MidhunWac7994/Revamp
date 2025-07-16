@@ -17,7 +17,6 @@ const ProductDetail = (props) => {
     context: {},
   });
 
-  // Fetch breadcrumb data
   const {
     data: breadcrumbData,
     loading: loadingBreadcrumb,

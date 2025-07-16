@@ -4,12 +4,21 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { toast } from "sonner";
 import { CARTID_KEY } from "../../Constants";
 
-const GET_PAYMENT_METHODS = gql`
+export const GET_PAYMENT_METHODS = gql `
   query GetPaymentMethods($cartId: String!) {
     cart(cart_id: $cartId) {
       available_payment_methods {
         code
         title
+        ImageUrl
+        myfatoorah_embed_data {
+          callback
+          currencyCode
+          CountryCode
+          amount
+          SessionId
+          paymentOptions
+        }
       }
     }
   }
@@ -44,7 +53,7 @@ const usePayment = (props = {}) => {
   const { shippingMethod = "", isSignedIn = false } = props;
 
   const navigate = useNavigate();
-  const { locale } = useParams(); // ✅ Get locale from route
+  const { locale } = useParams(); 
 
   const [isRedirecting, setIsRedirecting] = useState(false);
 

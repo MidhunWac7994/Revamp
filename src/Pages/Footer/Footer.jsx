@@ -20,9 +20,10 @@ const Footer = () => {
 
   const { loading, error, data } = useQuery(FOOTER);
 
-  // Parse footer data if available
   const footerData = data?.Footer ? JSON.parse(data.Footer) : null;
   const { siteFeatures, footer, socialMediaLinks, contact } = footerData || {};
+
+  // console.log(footerData, "Footer data from GraphQL");
 
   if (
     skipBasedOnPath(pathname, PATHS_TO_SKIP) ||
@@ -34,6 +35,7 @@ const Footer = () => {
   }
 
   return (
+    
     <>
       <div data-widget="Footer" className="py-7 bg-lw-dark-blue">
         <div className="main-container">
@@ -41,7 +43,6 @@ const Footer = () => {
             {siteFeatures &&
               siteFeatures.length > 0 &&
               siteFeatures.map((item) => {
-                // Dynamically get the icon component from lucide-react
                 const IconComponent = LucideIcons[item.icon];
 
                 return (

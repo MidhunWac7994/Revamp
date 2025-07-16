@@ -7,7 +7,7 @@ const CheckoutSummary = () => {
     useCheckoutContext();
 
   return (
-    <div className="max-tabletPro:mt-[30px] tabletPro:max-w-[395px] w-full border border-border-color px-6 py-8 sticky top-[calc(var(--spacing-header-heaight)+30px)] bg-white">
+    <div className="w-[500px]">
       <OrderSummary
         isCheckout
         totalQuantity={totalQuantity}

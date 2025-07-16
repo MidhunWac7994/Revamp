@@ -1,3 +1,6 @@
+import React from "react";
+import { useParams } from "react-router-dom";
+
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -5,29 +8,28 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbPage,
-} from '../../components/components/ui/breadcrumb'
+} from "../../components/components/ui/breadcrumb";
+
 import CheckoutAccordion from "../Checkout/CheckoutAccordion/CheckoutAccordion";
 import CheckoutProvider from "../Checkout/CheckoutProvider/CheckoutProvider";
-import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";  
+import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 
-const Checkout = ({ customerAddress, guestCheckout }) => {
+const Checkout = ({ customerAddress }) => {
+  const { locale } = useParams();
+
   const breadcrumbData = [
     {
       text: "Cart",
-      path: "/cart",
+      path: `/${locale}/cart`,
     },
     {
-      text: guestCheckout ? "Guest Checkout" : "Checkout",
+      text: "Checkout",
     },
   ];
 
   return (
-    <div
-      data-widget={guestCheckout ? "GuestCheckout" : "Checkout"}
-      className="inner-pages max-mobile:!pt-mob-header-heaight pb-10 relative min-h-[80vh] desktop:min-h-[100vh] bg-[#F6F6F6]"
-    >
-      <div className="main-container max-mobile:px-0">
-        
+    <div data-widget="Checkout" className=" ">
+      <div className="mb-8 ml-5">
         <Breadcrumb aria-label="breadcrumb">
           <BreadcrumbList className="text-muted-foreground">
             {breadcrumbData.map((item, index) => (
@@ -35,7 +37,7 @@ const Checkout = ({ customerAddress, guestCheckout }) => {
                 key={index}
                 className="inline-flex items-center gap-1.5"
               >
-                {item.path ? (    
+                {item.path ? (
                   <BreadcrumbLink
                     href={item.path}
                     className="hover:text-foreground"
@@ -52,15 +54,19 @@ const Checkout = ({ customerAddress, guestCheckout }) => {
             ))}
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
 
-        <div className=" ">
-          <CheckoutProvider customerAddress={customerAddress}>
-            <div className="">
+      <div>
+        <CheckoutProvider customerAddress={customerAddress}>
+          <div className="flex gap-4 items-start">
+            <div className="w-[600px] ml-44">
               <CheckoutAccordion />
             </div>
-            <CheckoutSummary />
-          </CheckoutProvider>
-        </div>
+            <div className=" ml-96">
+              <CheckoutSummary />
+            </div>
+          </div>
+        </CheckoutProvider>
       </div>
     </div>
   );

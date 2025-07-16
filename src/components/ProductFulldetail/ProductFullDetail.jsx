@@ -14,7 +14,6 @@ const ProductFullDetails = ({
 }) => {
   if (!productDetails) return <div>No product found.</div>;
 
-  // Extract custom hook values
   const {
     handleSelectConfig,
     productItem = {},

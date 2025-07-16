@@ -4,7 +4,7 @@ import useProductListing from "./useProductListing";
 import ProductBreadcrumb from "./ProductBreadcrumb";
 import FilterSidebar from "./FilterSidebar";
 import AddToCartButton from "../../components/AddtoCartButton";
-import { Progress } from "../../components/components/ui/progress";
+import Spinner from "../../components/Spinner/Spinner";
 import {
   Pagination,
   PaginationContent,
@@ -155,8 +155,8 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
           )}
 
           {loading ? (
-            <div className="mt-80">
-              <Progress value={30} style={{ width: "30%" }} />
+            <div className="flex justify-center items-center h-[60vh] animate-fade-in-down">
+              <Spinner className="size-12 border-[3px]" />
             </div>
           ) : products.length === 0 ? (
             <div>No products found for this category.</div>
@@ -258,7 +258,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
         </div>
       </div>
 
-      <div ref={topRef} />     
+      <div ref={topRef} />
     </div>
   );
 };

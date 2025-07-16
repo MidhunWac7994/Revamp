@@ -29,6 +29,9 @@ export {
 export const CHECKMO = "checkmo";
 export const FREE = "free";
 export const CASH_ON_DELIVERY = "cashondelivery";
+export const MYFATOORAH = "myfatoorah_payment";
+export const KNET = "waccommerce_knet";
+
 
 export const LOGIN_TOKEN_KEY = "liwan_auth_token";
 export const CARTID_KEY = "liwan_cart_id";

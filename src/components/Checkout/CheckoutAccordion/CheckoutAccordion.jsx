@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Accordion } from "../../components/ui/accordion";
 import LoginOrGuest from "../Login/Login";
 import { useGlobalData } from "../../../CustomHook/useGlobalData";
@@ -6,9 +7,8 @@ import { useCheckoutContext } from "../CheckoutProvider/CheckoutProvider";
 import CustomerAddress from "../CustomerAddress/CustomerAdress";
 import CheckoutShipping from "../CheckoutShipping/CheckoutShipping";
 import Payment from "../Payment/Payment";
-import { getLocalStorageWithExpiry } from "../../../utils/storageUtil";
-import { GUEST_USER_KEY } from "../../Constants";
-import { useParams } from "react-router-dom";
+import Spinner from "../../Spinner/Spinner";
+import AuthBlocks from "../../../Pages/Auth/AuthBlocks/AuthBlock";
 
 const CheckoutAccordion = () => {
   const { isSignedIn, user, loading } = useGlobalData();
@@ -19,20 +19,8 @@ const CheckoutAccordion = () => {
     disabled,
     getComletedSteps,
   } = useCheckoutContext();
-  const locale =useParams();
-  console.log("CheckoutAccordion State:", {
-    isSignedIn,
-    loading,
-    user,
-    purchaseMethod,
-    activeAccordion,
-    disabled,
-    completedSteps: getComletedSteps(),
-  });
-  console.log(locale)
 
-  const guestData = getLocalStorageWithExpiry(GUEST_USER_KEY);
-  const { mobile } = guestData || {};
+  const [showAuthModal, setShowAuthModal] = useState(false); 
 
   const fullName = user
     ? `${user.firstname || ""} ${user.lastname || ""}`.trim()
@@ -43,19 +31,19 @@ const CheckoutAccordion = () => {
     if (fullName && phoneNumber) return `${fullName}, ${phoneNumber}`;
     if (phoneNumber) return phoneNumber;
     if (fullName) return fullName;
-    return "Guest";
+    return "User";
   };
 
   const userName = getUserName();
 
   const userInfoTitle = loading ? (
-    <div className="shine">Loading...</div>
+    <div className="shine">
+      <Spinner />
+    </div>
   ) : isSignedIn ? (
     <>Continue as {userName}</>
-  ) : mobile ? (
-    <>Continue as guest {mobile}</>
   ) : (
-    "Login or Continue as Guest user"
+    "Login to continue"
   );
 
   const checkoutSteps = [
@@ -64,9 +52,9 @@ const CheckoutAccordion = () => {
       eventKey: "customer_info",
       title: userInfoTitle,
       jsxComponent: isSignedIn ? (
-        <div className="text-16 text-black p-4">Signed in as {userName}</div>
+        <div className="text-16 bg-gray-200 text-black p-4">Signed in as {userName}</div>
       ) : (
-        <LoginOrGuest />
+        <LoginOrGuest onLoginClick={() => setShowAuthModal(true)} />
       ),
     },
     {
@@ -94,7 +82,7 @@ const CheckoutAccordion = () => {
   ];
 
   return (
-    <div data-widget="CheckoutAccordion">
+    <div className="w-[600px] ml-44 ">
       <Accordion
         type="single"
         value={activeAccordion}
@@ -114,6 +102,26 @@ const CheckoutAccordion = () => {
           />
         ))}
       </Accordion>
+
+      {showAuthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          
+          <div
+            className="absolute inset-0  bg-opacity-40"
+            onClick={() => setShowAuthModal(false)} 
+          ></div>
+
+          <div className="relative z-10 bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-black"
+              onClick={() => setShowAuthModal(false)}
+            >
+              ✕
+            </button>
+            <AuthBlocks onClose={() => setShowAuthModal(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

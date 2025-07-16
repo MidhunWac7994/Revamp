@@ -23,7 +23,20 @@ const ScheduleDate = ({ disableBtn }) => {
     isMutating,
   } = useScheduleDate();
 
-  const disabled = disableBtn || isLoading;
+  const hasSelectedDate = !!dateAndTime?.scheduledDate?.date;
+  const hasSelectedTime = !!dateAndTime?.scheduledTime;
+
+  // Disable "Continue" if:
+  // - external disable flag is set
+  // - loading
+  // - date or time is not selected
+  const disabled =
+    disableBtn ||
+    isLoading ||
+    selectedTimeLoading ||
+    isMutating ||
+    !hasSelectedDate ||
+    !hasSelectedTime;
 
   if (isLoading) return <ScheduleDateShimmer />;
   if (!generateDays()?.length) return null;
@@ -44,42 +57,43 @@ const ScheduleDate = ({ disableBtn }) => {
           className="w-full max-w-[584px] relative"
         >
           <CarouselContent className="-ml-2">
-            {generateDays()?.map((ele, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-1/5 laptop:basis-1/7 pl-2"
-              >
-                <button
-                  disabled={selectedTimeLoading || isMutating}
-                  onClick={() => handleSetDate(ele)}
-                  className="text-center w-full group"
+            {generateDays()?.map((ele, index) => {
+              const isSelected = dateAndTime?.scheduledDate?.date === ele?.date;
+              return (
+                <CarouselItem
+                  key={index}
+                  className="basis-1/5 laptop:basis-1/7 pl-2"
                 >
-                  <span className="text-13 text-[#6F6F6F] block mb-2 text-center">
-                    {ele?.day}
-                  </span>
-                  <div
-                    className={`bg-[#F8F8F8] text-center py-3 px-5 border-b-4 border-lw-primary flex flex-col gap-1 group-hover:bg-lw-primary group-hover:text-white transition-all duration-300 hover:bg-black group-hover:border-[#47d1c3] ${
-                      dateAndTime?.scheduledDate?.date === ele?.date
-                        ? "border-[#47d1c3] bg-lw-primary text-white"
-                        : ""
-                    }`}
+                  <button
+                    disabled={selectedTimeLoading || isMutating}
+                    onClick={() => handleSetDate(ele)}
+                    className="text-center w-full group"
                   >
-                    <span className="block text-16 font-semibold">
-                      {ele?.date}
+                    <span className="text-13 text-[#6F6F6F] block mb-2">
+                      {ele?.day}
                     </span>
-                    <span
-                      className={`block text-13 text-[#B3B3B3] group-hover:text-white transition-all duration-300 ${
-                        dateAndTime?.scheduledDate?.date === ele?.date
-                          ? "text-white"
+                    <div
+                      className={`bg-[#F8F8F8] text-center py-3 px-5 border-b-4 border-lw-primary flex flex-col gap-1 group-hover:bg-lw-primary group-hover:text-white transition-all duration-300 hover:bg-black group-hover:border-[#47d1c3] ${
+                        isSelected
+                          ? "border-[#47d1c3] bg-lw-primary text-[#2cb5a7]"
                           : ""
                       }`}
                     >
-                      {ele?.month}
-                    </span>
-                  </div>
-                </button>
-              </CarouselItem>
-            ))}
+                      <span className="block text-16 font-semibold">
+                        {ele?.date}
+                      </span>
+                      <span
+                        className={`block text-13 text-[#B3B3B3] group-hover:text-white transition-all duration-300 ${
+                          isSelected ? "text-[#2cb5a7]" : ""
+                        }`}
+                      >
+                        {ele?.month}
+                      </span>
+                    </div>
+                  </button>
+                </CarouselItem>
+              );
+            })}
           </CarouselContent>
 
           <div className="absolute w-[calc(100%+60px)] left-[50%] -translate-x-[50%] top-[47%] tablet:flex items-center justify-between pointer-events-none hidden">
@@ -93,18 +107,14 @@ const ScheduleDate = ({ disableBtn }) => {
         Choose time slots
       </p>
 
-      {isLoading ? (
-        <div className="w-full h-[50px] bg-gray-bg animate-pulse" />
-      ) : (
-        <SelectBox
-          placeholder="Select delivery time"
-          options={deliveryTime}
-          buttonClassName="max-w-[300px]"
-          active={dateAndTime?.scheduledTime}
-          onChange={handleSetDeliveryTime}
-          disabled={selectedTimeLoading || isMutating}
-        />
-      )}
+      <SelectBox
+        placeholder="Select delivery time"
+        options={deliveryTime}
+        buttonClassName="max-w-[300px]"
+        active={dateAndTime?.scheduledTime}
+        onChange={handleSetDeliveryTime}
+        disabled={selectedTimeLoading || isMutating}
+      />
 
       <div className="mt-5">
         <Button
@@ -112,7 +122,7 @@ const ScheduleDate = ({ disableBtn }) => {
           variant="primary"
           size="xl"
           onClick={confirmShippingMethod}
-          className="w-40 bg-[#53bcb7] text-white  rounded-none  h-12"
+          className="w-40 bg-[#53bcb7] text-white rounded-none h-12"
         >
           Continue
         </Button>
