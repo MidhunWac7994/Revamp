@@ -68,7 +68,7 @@ const UrlResolver = () => {
         );
 
       case "PRODUCT":
-        return <ProductDetail url={flatUrl} pageType={pageType} />;
+        return <ProductDetail url={flatUrl} page={page} pageType={pageType} />;
 
       case "CMS_PAGE":
         switch (cmsPageType) {

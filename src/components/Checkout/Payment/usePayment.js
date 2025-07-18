@@ -53,7 +53,7 @@ const usePayment = (props = {}) => {
   const { shippingMethod = "", isSignedIn = false } = props;
 
   const navigate = useNavigate();
-  const { locale } = useParams(); 
+  const { locale } = useParams();       
 
   const [isRedirecting, setIsRedirecting] = useState(false);
 

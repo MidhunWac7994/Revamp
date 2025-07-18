@@ -1,7 +1,8 @@
 import { gql, useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useCartConfig from './useCartConfig';
+import { useEffect } from "react";
+import useCartConfig from "./useCartConfig";
 
 const useCartItemsForCheckout = () => {
   const navigate = useNavigate();
@@ -20,41 +21,46 @@ const useCartItemsForCheckout = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-
-  if (error) {
-    console.error(error.message);
-    if (error.message === `The cart isn't active.`) {
-      fetchCartId();
-    } else if (
-      error.message.includes(
-        "The current user cannot perform operations on cart"
-      )
-    ) {
-      fetchCartId();
-    } else {
-      toast.error(error.message);
-      navigate("/");
-    }
-  }
-
   const cartItems = data?.cart?.items ?? [];
-
-  if (!loading && cartItems.length === 0) {
-    toast.error("Your cart is empty. Continue shopping");
-    navigate("/");
-  }
 
   const isOutOfStock = cartItems.some(
     (item) => !item?.is_stock_available_for_item
   );
-  if (!loading && isOutOfStock) {
-    toast.error("Some of the product in your cart is out of stock!", {
-      duration: 6000,
-    });
-    navigate("/cart");
-  }
-
   const isInStock = cartItems.length > 0 && !isOutOfStock;
+
+  useEffect(() => {
+    if (error) {
+      console.error(error.message);
+      if (error.message === `The cart isn't active.`) {
+        fetchCartId();
+      } else if (
+        error.message.includes(
+          "The current user cannot perform operations on cart"
+        )
+      ) {
+        fetchCartId();
+      } else {
+        toast.error(error.message);
+        navigate("/");
+      }
+    }
+  }, [error, fetchCartId, navigate]);
+
+  useEffect(() => {
+    if (!loading && cartItems.length === 0) {
+      toast.error("Your cart is empty. Continue shopping");
+      navigate("/");
+    }
+  }, [loading, cartItems.length, navigate]);
+
+  useEffect(() => {
+    if (!loading && isOutOfStock) {
+      toast.error("Some of the product in your cart is out of stock!", {
+        duration: 6000,
+      });
+      navigate("/cart");
+    }
+  }, [loading, isOutOfStock, navigate]);
 
   return {
     cartItems,
@@ -66,8 +72,7 @@ const useCartItemsForCheckout = () => {
 
 export default useCartItemsForCheckout;
 
-
-const GET_CART_DETAILS = gql `
+const GET_CART_DETAILS = gql`
   query GetCartDetailsForCheckout($cartId: String!) {
     cart(cart_id: $cartId) {
       id

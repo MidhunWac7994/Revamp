@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { GET_PRODUCT_DETAIL, GET_PDP_BREADCRUMB } from "./DetailQuery";
 import ProductFullDetails from  '../../components/ProductFulldetail/ProductFullDetail';
 import EmptyPages from "../../components/EmptyPages/EmptyPages";
+import Spinner from  "../../components/Spinner/Spinner";
 
 const ProductDetail = (props) => {
   const { url, locale, key, version } = props;
@@ -26,7 +27,11 @@ const ProductDetail = (props) => {
     context: {},
   });
 
-  if (loadingProduct || loadingBreadcrumb) return <div>Loading...</div>;
+  if (loadingProduct || loadingBreadcrumb ) return (
+    <div className="flex justify-center items-center h-[60vh] animate-fade-in-down">
+      <Spinner className="size-12 border-[3px]" />
+    </div>
+  );
   if (errorProduct || errorBreadcrumb)
     return <div>Error loading product or breadcrumb data.</div>;
 

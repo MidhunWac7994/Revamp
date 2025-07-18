@@ -21,13 +21,11 @@ import {
   DropdownMenuItem,
 } from "../../components/components/ui/dropdown-menu";
 import { Button } from "../../components/components/ui/button";
+import NotifyBtn from "../../components/NotifyBtn/NotifyBtn"
 
 const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
   const { locale, page } = useParams();
   const navigate = useNavigate();
-  
-  
-
   const initialPage = parseInt(page, 10) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isFilterVisible, setIsFilterVisible] = useState(true);
@@ -50,7 +48,7 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const startItem = (currentPage - 1) * PAGE_SIZE + 1;
   const endItem = Math.min(currentPage * PAGE_SIZE, totalCount);
-
+console.log(currentPage,"currentPage")
   useEffect(() => {
     if (topRef?.current) {
       topRef.current.scrollIntoView({ behavior: "smooth" });
@@ -200,11 +198,29 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                           2
                         )}
                       </p>
-                      <AddToCartButton
-                        productId={product.id}
-                        productName={product.name}
-                        productSku={product.sku}
-                      />
+
+                      {product.stock_status === "OUT_OF_STOCK" ? (
+                        <NotifyBtn
+                          id={product.id}
+                          name={product.name}
+                          minPrice={
+                            product.price_range.maximum_price.final_price.value
+                          }
+                          maxPrice={
+                            product.price_range.minimum_price.final_price.value
+                          }
+                          image={product.image?.url}
+                          attributeDetails={product?.attributes || []}
+                          combinationNotFound={false}
+                          btnClassName="w-full h-[40px] text-sm"
+                        />
+                      ) : (
+                        <AddToCartButton
+                          productId={product.id}
+                          productName={product.name}
+                          productSku={product.sku}
+                        />
+                      )}
                     </div>
                   </li>
                 ))}
@@ -217,36 +233,50 @@ const Products = ({ categoryId, categoryName, categoryUrlKey }) => {
                       <PaginationItem>
                         <PaginationPrevious
                           onClick={() => setCurrentPage((prev) => prev - 1)}
+                          className="cursor-pointer"
                         />
                       </PaginationItem>
                     )}
 
-                    {[...Array(totalPages).keys()]
-                      .map((i) => i + 1)
-                      .filter(
-                        (pageNum) =>
-                          pageNum === 1 ||
-                          pageNum === totalPages ||
-                          Math.abs(pageNum - currentPage) <= 1
-                      )
-                      .map((pageNum, index, arr) => (
-                        <PaginationItem key={pageNum}>
-                          {index > 0 && pageNum - arr[index - 1] > 1 ? (
-                            <PaginationEllipsis />
-                          ) : null}
-                          <PaginationLink
-                            isActive={pageNum === currentPage}
-                            onClick={() => setCurrentPage(pageNum)}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
+                    {(() => {
+                      const pagesPerGroup = 5;
+                      const currentGroup = Math.floor(
+                        (currentPage - 1) / pagesPerGroup
+                      );
+                      const startPage = currentGroup * pagesPerGroup + 1;
+                      const endPage = Math.min(
+                        startPage + pagesPerGroup - 1,
+                        totalPages
+                      );
+
+                      const pageItems = [];
+
+                      for (let i = startPage; i <= endPage; i++) {
+                        pageItems.push(
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              isActive={i === currentPage}
+                              onClick={() => setCurrentPage(i)}
+                              className={`cursor-pointer border transition-all px-3 py-1 rounded-none ${
+                                i === currentPage
+                                  ? "border-black text-black"
+                                  : "border-gray-300 text-gray-600"
+                              } hover:border-black`}
+                            >
+                              {i}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      }
+
+                      return pageItems;
+                    })()}
 
                     {currentPage < totalPages && (
                       <PaginationItem>
                         <PaginationNext
                           onClick={() => setCurrentPage((prev) => prev + 1)}
+                          className="cursor-pointer"
                         />
                       </PaginationItem>
                     )}

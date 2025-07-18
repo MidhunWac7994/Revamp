@@ -5,6 +5,7 @@ import DetailButtons from "../DetailButtons/DetailButtons";
 import PaymentDetails from "../PaymentDetails/PaymentDetails";
 import ExpectedDelivery from "../ExpectedDelivery/ExpectedDelivery";
 import AvailableStores from "../AvailableStores/AvailableStores";
+import NotifyBtn from "../NotifyBtn/NotifyBtn";
 
 const ProductFullDetails = ({
   productDetails,
@@ -21,7 +22,6 @@ const ProductFullDetails = ({
     combinationNotFound,
   } = useProductDetail({ productDetails });
 
-  // Extract product details and provide defaults where needed
   const {
     name,
     sku,
@@ -71,7 +71,7 @@ const ProductFullDetails = ({
       )}
 
       <div className="flex flex-col md:flex-row gap-10 items-start">
-        {/* Product Image */}
+
         <div className="flex-shrink-0 w-full md:w-1/2 flex justify-center">
           {image && (
             <img
@@ -82,7 +82,6 @@ const ProductFullDetails = ({
           )}
         </div>
 
-        {/* Product Info */}
         <div className="w-full md:w-1/2">
           <h1 className="text-2xl mb-4">{name}</h1>
 
@@ -106,29 +105,38 @@ const ProductFullDetails = ({
 
           <h2 className="text-xl mb-2 text-black">Quantity</h2>
 
-          {/* 
-  <ProductCounter
-    combinationNotFound={combinationNotFound}
-    handleDecrement={handleDecrement}
-    handleIncrement={handleIncrement}
-    qty={qty}
-  /> 
-  */}
+          {stock_status === "OUT_OF_STOCK" ? (
+            <NotifyBtn
+              id={productItem?.id}
+              name={name}
+              minPrice={regularPrice}
+              maxPrice={finalPrice}
+              combinationNotFound={combinationNotFound}
+              attributeDetails={
+                selectedConfig && selectedConfig.length > 0
+                  ? selectedConfig.map((conf) => ({
+                      code: conf.code,
+                      label: conf.value,
+                    }))
+                  : []
+              }
+              image={media_gallery?.[0]?.url}
+            />
+          ) : (
+            <DetailButtons
+              id={productItem?.id}
+              name={name}
+              sku={sku}
+              selectedVariantsUid={selectedVariantsUid}
+              combinationNotFound={combinationNotFound}
+              handleDecrement={handleDecrement}
+              handleIncrement={handleIncrement}
+              qty={qty}
+            />
+          )}
 
-          <DetailButtons
-            id={productItem?.id}
-            name={name}
-            sku={sku}
-            selectedVariantsUid={selectedVariantsUid}
-            combinationNotFound={combinationNotFound}
-          />
-
-          {/* ✅ Payment details first */}
           <PaymentDetails />
-
-          {/* ✅ Then expected delivery */}
           <ExpectedDelivery />
-
           <AvailableStores
             sku={sku}
             combinationNotFound={combinationNotFound}

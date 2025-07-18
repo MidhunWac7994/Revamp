@@ -39,7 +39,6 @@ const AddToCartButton = ({
 
     if (result) {
       toast.success(`${productName || "Item"} added to the cart!`);
-      // If "Buy Now" should trigger navigation or checkout, do it here
     } else {
       toast.error("Failed to add item to the cart.");
     }

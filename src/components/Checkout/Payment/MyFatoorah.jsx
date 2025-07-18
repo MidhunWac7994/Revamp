@@ -16,7 +16,7 @@ const MyFatoorah = (props) => {
   } = props;
 
 
-  const { status, setFalse, setTrue } = useToggle();                                                                         
+      const { status, setFalse, setTrue } = useToggle();                                                                         
   return (
     <Dialog
       open={status}
@@ -28,8 +28,8 @@ const MyFatoorah = (props) => {
           setFalse();
         }
       }}
-    >
-      <DialogTrigger asChild>   
+    >                             
+      <DialogTrigger asChild>
         <div className="flex flex-col gap-y-4 mobile:border-b border-border-color mobile:first-of-type:border-t first-of-type:border-t-border">
           <button
             data-widget="MyFatoorah"

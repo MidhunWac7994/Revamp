@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "../../components/Constants";
 import { GET_PRODUCT_LISTING } from "./ListQuery";
 
-
 const formatFilters = (appliedFilters) => {
   if (!appliedFilters) return {};
 
@@ -34,12 +33,12 @@ const useProductListing = (categoryId) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const topRef = useRef(null);
 
- 
+  // Scroll to top on page change
   useEffect(() => {
     topRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [currentPage]);
 
- 
+  // Sync filters and sort from URL params
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     const parsedFilters = {};
@@ -55,6 +54,7 @@ const useProductListing = (categoryId) => {
     setSortOption(parsedSort);
   }, [searchParams]);
 
+  // Update URL when filters change
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     setCurrentPage(1);
@@ -71,6 +71,7 @@ const useProductListing = (categoryId) => {
     setSearchParams(updatedQuery);
   };
 
+  // Update URL when sort changes
   const handleSortChange = (value) => {
     setSortOption(value);
     setCurrentPage(1);
@@ -84,12 +85,14 @@ const useProductListing = (categoryId) => {
     setSearchParams(updatedQuery);
   };
 
+  // Compute sort object for query
   const sort = useMemo(() => {
     if (sortOption === "price_asc") return { price: "ASC" };
     if (sortOption === "price_desc") return { price: "DESC" };
     return {};
   }, [sortOption]);
 
+  // Query variables memoized
   const queryVariables = useMemo(
     () => ({
       filter: formatFilters(filters),
@@ -101,13 +104,17 @@ const useProductListing = (categoryId) => {
     [filters, currentPage, categoryId, sort]
   );
 
-  const { loading, data } = useQuery(GET_PRODUCT_LISTING, {
+  // useQuery hook called unconditionally, skip if no categoryId
+  const { loading, data, error } = useQuery(GET_PRODUCT_LISTING, {
     variables: queryVariables,
+    skip: !categoryId,
+    fetchPolicy: "cache-and-network",
   });
 
   return {
     loading,
     data,
+    error,
     filters,
     sortOption,
     currentPage,

@@ -37,7 +37,7 @@ const AddressForm = (props) => {
       </div>
 
       {values?.formatted_address && (
-        <div className="my-4 bg-[#F4F4F4] px-4 py-3 rounded-[6px] flex items-center justify-between">
+        <div className="my-4  border border-gray-400 px-4 py-3 rounded-none  flex items-center justify-between">
           <p className="text-base font-semibold text-black">
             {values?.formatted_address}
           </p>
@@ -159,13 +159,13 @@ const AddressForm = (props) => {
         <Button
           type="button"
           variant="outline"
-          className="h-[50px] min-w-[125px]"
+          className="h-[50px] min-w-[125px] rounded-none border-black"
           onClick={previous}
         >
           Back
         </Button>
         <FormSubmitButton
-          className="h-[50px] min-w-[125px]"
+          className="h-[50px] min-w-[125px] rounded-none  bg-[#2cb5a7] text-white  "
           variant="primary"
           label={submitBtnLabel}
           loading={isMutating}
